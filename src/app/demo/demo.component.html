@@ -1,0 +1,301 @@
+<div class="demo-container" [ngClass]="getCardClasses()">
+  <h1>{{ title }}</h1>
+  
+  <!-- Angular Material Components & NgModel 2-way binding Demo -->
+  <mat-tab-group>
+    
+    <!-- Tab 1: Forms & 2-way Binding -->
+    <mat-tab label="Forms & 2-way Binding">
+      <mat-card class="demo-card">
+        <mat-card-header>
+          <mat-card-title>NgModel - 2-Way Data Binding</mat-card-title>
+          <mat-card-subtitle>Demonstriert verschiedene Angular Material Form Components</mat-card-subtitle>
+        </mat-card-header>
+        
+        <mat-card-content>
+          <!-- Text Input with NgModel -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Dein Name</mat-label>
+            <input matInput [(ngModel)]="userName" placeholder="Gib deinen Namen ein">
+            <mat-icon matSuffix>person</mat-icon>
+          </mat-form-field>
+          
+          <!-- Email Input with NgModel -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Email Adresse</mat-label>
+            <input matInput type="email" [(ngModel)]="userEmail" placeholder="deine@email.de">
+            <mat-icon matSuffix>email</mat-icon>
+          </mat-form-field>
+          
+          <!-- Age Slider with NgModel -->
+          <div class="slider-container">
+            <label for="age-slider">Alter: {{ userAge }}</label>
+            <mat-slider min="18" max="100" step="1" discrete>
+              <input matSliderThumb [(ngModel)]="userAge" id="age-slider">
+            </mat-slider>
+          </div>
+          
+          <!-- Theme Select with NgModel -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Wähle ein Theme</mat-label>
+            <mat-select [(ngModel)]="selectedTheme" (selectionChange)="onThemeChange()">
+              @for (theme of themes; track theme.value) {
+                <mat-option [value]="theme.value">{{ theme.label }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          
+          <!-- Radio Buttons with NgModel -->
+          <div class="radio-group">
+            <label>Geschlecht:</label>
+            <mat-radio-group [(ngModel)]="selectedGender" class="radio-group-horizontal">
+              <mat-radio-button value="male">Männlich</mat-radio-button>
+              <mat-radio-button value="female">Weiblich</mat-radio-button>
+              <mat-radio-button value="other">Andere</mat-radio-button>
+            </mat-radio-group>
+          </div>
+          
+          <!-- Checkbox with NgModel -->
+          <div class="checkbox-container">
+            <mat-checkbox [(ngModel)]="isNewsletterSubscribed">
+              Newsletter abonnieren
+            </mat-checkbox>
+          </div>
+          
+          <!-- Display bound values -->
+          <mat-divider></mat-divider>
+          <div class="user-info" [ngStyle]="getBackgroundStyle()">
+            <h3>Live Daten (2-way binding):</h3>
+            <p><strong>Name:</strong> {{ userName || 'Noch nicht eingegeben' }}</p>
+            <p><strong>Email:</strong> {{ userEmail || 'Noch nicht eingegeben' }}</p>
+            <p><strong>Alter:</strong> {{ userAge }} Jahre</p>
+            <p><strong>Theme:</strong> {{ selectedTheme }}</p>
+            <p><strong>Geschlecht:</strong> {{ selectedGender }}</p>
+            <p><strong>Newsletter:</strong> {{ isNewsletterSubscribed ? 'Ja' : 'Nein' }}</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-tab>
+    
+    <!-- Tab 2: Event Binding & Click Events -->
+    <mat-tab label="Event Binding">
+      <mat-card class="demo-card">
+        <mat-card-header>
+          <mat-card-title>(click) Event Binding</mat-card-title>
+          <mat-card-subtitle>Verschiedene Click Events demonstriert</mat-card-subtitle>
+        </mat-card-header>
+        
+        <mat-card-content>
+          <!-- Basic Click Event -->
+          <div class="button-section">
+            <button mat-raised-button color="primary" (click)="onButtonClick()">
+              <mat-icon>mouse</mat-icon>
+              Klick mich! ({{ clickCount }}x geklickt)
+            </button>
+            
+            <button mat-raised-button color="accent" (click)="toggleAdvancedOptions()">
+              <mat-icon>settings</mat-icon>
+              Erweiterte Optionen {{ showAdvancedOptions ? 'verbergen' : 'anzeigen' }}
+            </button>
+            
+            <button mat-raised-button color="warn" (click)="toggleDarkMode()">
+              <mat-icon>{{ isDarkMode ? 'light_mode' : 'dark_mode' }}</mat-icon>
+              {{ isDarkMode ? 'Light' : 'Dark' }} Mode
+            </button>
+          </div>
+          
+          <!-- Show last clicked task -->
+          @if (lastClickedTask) {
+            <mat-card class="info-card">
+              <mat-card-content>
+                <mat-icon>info</mat-icon>
+                Letzte geklickte Aufgabe: <strong>{{ lastClickedTask }}</strong>
+              </mat-card-content>
+            </mat-card>
+          }
+          
+          <!-- @if Demonstration -->
+          @if (showAdvancedOptions) {
+            <mat-card class="advanced-options">
+                             <mat-card-header>
+                 <mat-card-title>&#64;if - Erweiterte Optionen</mat-card-title>
+               </mat-card-header>
+              <mat-card-content>
+                <p>Diese Sektion wird nur angezeigt wenn showAdvancedOptions = true ist!</p>
+                
+                <!-- NgStyle Demo with sliders -->
+                <div class="style-controls">
+                  <h4>NgStyle Demo - Dynamische Styles:</h4>
+                  
+                  <div class="slider-container">
+                    <label>Hintergrund Opazität: {{ backgroundOpacity }}%</label>
+                    <mat-slider min="0" max="100" step="5">
+                      <input matSliderThumb [(ngModel)]="backgroundOpacity">
+                    </mat-slider>
+                  </div>
+                  
+                  <div class="slider-container">
+                    <label>Border Radius: {{ borderRadius }}px</label>
+                    <mat-slider min="0" max="50" step="2">
+                      <input matSliderThumb [(ngModel)]="borderRadius">
+                    </mat-slider>
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          }
+        </mat-card-content>
+      </mat-card>
+    </mat-tab>
+    
+    <!-- Tab 3: @for, @switch, NgClass -->
+    <mat-tab label="Listen & Conditionals">
+      <mat-card class="demo-card">
+                 <mat-card-header>
+           <mat-card-title>&#64;for, &#64;switch & NgClass Demo</mat-card-title>
+           <mat-card-subtitle>Loops, Conditionals und dynamische CSS Klassen</mat-card-subtitle>
+         </mat-card-header>
+        
+        <mat-card-content>
+          <!-- View Toggle for @switch -->
+          <div class="view-toggle">
+            <label>Ansicht wählen:</label>
+            <mat-radio-group [(ngModel)]="currentView" class="radio-group-horizontal">
+              <mat-radio-button value="list">Liste</mat-radio-button>
+              <mat-radio-button value="grid">Grid</mat-radio-button>
+              <mat-radio-button value="cards">Karten</mat-radio-button>
+            </mat-radio-group>
+          </div>
+          
+          <!-- Add Task Button -->
+          <div class="action-buttons">
+            <button mat-raised-button color="primary" (click)="addNewTask()">
+              <mat-icon>add</mat-icon>
+              Neue Aufgabe hinzufügen
+            </button>
+          </div>
+          
+          <!-- @switch Demonstration -->
+          @switch (currentView) {
+            @case ('list') {
+                             <div class="list-view">
+                 <h3>&#64;for - Aufgaben als Liste (NgClass Demo):</h3>
+                @for (task of tasks; track task.id; let i = $index) {
+                  <div class="task-item" 
+                       [ngClass]="getTaskClasses(task)"
+                       (click)="onTaskClick(task.title)">
+                    <mat-icon>{{ task.completed ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+                    <span class="task-content">
+                      {{ i + 1 }}. {{ task.title }} 
+                      <mat-chip [color]="task.priority === 'high' ? 'warn' : task.priority === 'medium' ? 'accent' : 'primary'">
+                        {{ task.priority }}
+                      </mat-chip>
+                    </span>
+                    <button mat-icon-button (click)="toggleTaskCompletion(task); $event.stopPropagation()">
+                      <mat-icon>{{ task.completed ? 'undo' : 'done' }}</mat-icon>
+                    </button>
+                    <button mat-icon-button color="warn" (click)="removeTask(task.id); $event.stopPropagation()">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                } @empty {
+                  <p class="empty-message">Keine Aufgaben vorhanden</p>
+                }
+              </div>
+            }
+            
+            @case ('grid') {
+                             <div class="grid-view">
+                 <h3>&#64;for - Aufgaben als Grid:</h3>
+                <div class="task-grid">
+                  @for (task of tasks; track task.id; let isEven = $even) {
+                                         <div class="task-grid-item" 
+                          [ngClass]="getGridItemClasses(task, isEven)"
+                          (click)="onTaskClick(task.title)">
+                      <mat-icon>{{ task.completed ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+                      <p>{{ task.title }}</p>
+                      <mat-chip [color]="task.priority === 'high' ? 'warn' : 'primary'">{{ task.priority }}</mat-chip>
+                    </div>
+                  } @empty {
+                    <p class="empty-message">Keine Aufgaben vorhanden</p>
+                  }
+                </div>
+              </div>
+            }
+            
+            @case ('cards') {
+                             <div class="cards-view">
+                 <h3>&#64;for - Aufgaben als Material Cards:</h3>
+                <div class="card-container">
+                  @for (task of tasks; track task.id; let isFirst = $first; let isLast = $last) {
+                                         <mat-card class="task-card" 
+                              [ngClass]="getCardItemClasses(task, isFirst, isLast)"
+                              (click)="onTaskClick(task.title)">
+                      <mat-card-header>
+                        <mat-card-title>{{ task.title }}</mat-card-title>
+                        <mat-card-subtitle>Priorität: {{ task.priority }}</mat-card-subtitle>
+                      </mat-card-header>
+                      <mat-card-content>
+                        <p>Status: {{ task.completed ? 'Erledigt' : 'Offen' }}</p>
+                        @if (isFirst) {
+                          <mat-chip color="accent">Erste Aufgabe</mat-chip>
+                        }
+                        @if (isLast) {
+                          <mat-chip color="warn">Letzte Aufgabe</mat-chip>
+                        }
+                      </mat-card-content>
+                      <mat-card-actions>
+                        <button mat-button (click)="toggleTaskCompletion(task); $event.stopPropagation()">
+                          {{ task.completed ? 'Rückgängig' : 'Erledigen' }}
+                        </button>
+                        <button mat-button color="warn" (click)="removeTask(task.id); $event.stopPropagation()">
+                          Löschen
+                        </button>
+                      </mat-card-actions>
+                    </mat-card>
+                  } @empty {
+                    <mat-card>
+                      <mat-card-content>
+                        <p class="empty-message">Keine Aufgaben vorhanden</p>
+                      </mat-card-content>
+                    </mat-card>
+                  }
+                </div>
+              </div>
+            }
+          }
+          
+          <!-- Color Demo with @for -->
+          <mat-divider></mat-divider>
+                     <div class="color-demo">
+             <h4>&#64;for - Farben Demo:</h4>
+            <div class="color-chips">
+              @for (color of colors; track color; let index = $index) {
+                <mat-chip 
+                  [ngStyle]="{'background-color': color, 'color': 'white'}"
+                  [ngClass]="{'selected-color': selectedTheme === color}">
+                  {{ index + 1 }}. {{ color }}
+                </mat-chip>
+              }
+            </div>
+          </div>
+          
+        </mat-card-content>
+      </mat-card>
+    </mat-tab>
+    
+  </mat-tab-group>
+  
+  <!-- Progress indicator -->
+  <mat-card class="progress-card">
+    <mat-card-content>
+      <h4>Fortschritt der erledigten Aufgaben:</h4>
+             <mat-progress-bar 
+         mode="determinate" 
+         [value]="getCompletionPercentage()">
+       </mat-progress-bar>
+       <p>{{ getCompletedTasksCount() }} von {{ tasks.length }} Aufgaben erledigt</p>
+    </mat-card-content>
+  </mat-card>
+  
+</div>
