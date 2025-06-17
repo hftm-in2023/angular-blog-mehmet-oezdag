@@ -12,6 +12,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 // Services
 import { BlogService, BlogPost } from './services/blog.service';
@@ -31,6 +33,8 @@ import { DemoComponent } from './demo/demo.component';
     MatFormFieldModule,
     MatProgressSpinnerModule,
     MatDividerModule,
+    MatDialogModule,
+    MatTooltipModule,
     DemoComponent
   ],
   templateUrl: './app.component.html',
@@ -49,10 +53,68 @@ export class AppComponent implements OnInit {
   // Filter-Optionen
   showOnlyFeatured = false;
   
+  // UI State
+  isDarkMode = false;
+  showSwaggerHelp = false;
+  
+  // Swagger-UI Help Content
+  swaggerExampleJson = `{
+  "title": "Mein neuer Blog-Post",
+  "content": "Das ist der Inhalt meines Posts...",
+  "author": "Mehmet Oezdag",
+  "category": "Angular",
+  "tags": ["tutorial", "angular"],
+  "featured": false
+}`;
+  
   constructor(private blogService: BlogService) {}
 
   ngOnInit(): void {
     this.loadBlogData();
+    this.loadDarkModePreference();
+  }
+
+  /**
+   * Lädt die Dark Mode Einstellung aus dem localStorage
+   */
+  private loadDarkModePreference(): void {
+    const darkModePreference = localStorage.getItem('darkMode');
+    this.isDarkMode = darkModePreference === 'true';
+    this.applyDarkMode();
+  }
+
+  /**
+   * Toggles Dark Mode
+   */
+  toggleDarkMode(): void {
+    this.isDarkMode = !this.isDarkMode;
+    localStorage.setItem('darkMode', this.isDarkMode.toString());
+    this.applyDarkMode();
+  }
+
+  /**
+   * Wendet Dark Mode auf das Dokument an
+   */
+  private applyDarkMode(): void {
+    if (this.isDarkMode) {
+      document.body.classList.add('dark-theme');
+    } else {
+      document.body.classList.remove('dark-theme');
+    }
+  }
+
+  /**
+   * Toggles Swagger-UI Help Popup
+   */
+  toggleSwaggerHelp(): void {
+    this.showSwaggerHelp = !this.showSwaggerHelp;
+  }
+
+  /**
+   * Schließt das Swagger-UI Help Popup
+   */
+  closeSwaggerHelp(): void {
+    this.showSwaggerHelp = false;
   }
 
   /**

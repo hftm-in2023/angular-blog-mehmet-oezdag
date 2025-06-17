@@ -9,7 +9,71 @@
           matTooltip="Demo-Komponente anzeigen/verbergen">
     <mat-icon>{{ showDemo ? 'visibility_off' : 'visibility' }}</mat-icon>
   </button>
+  
+  <button mat-icon-button (click)="toggleDarkMode()" 
+          matTooltip="Dark Mode umschalten">
+    <mat-icon>{{ isDarkMode ? 'light_mode' : 'dark_mode' }}</mat-icon>
+  </button>
+  
+  <button mat-icon-button (click)="toggleSwaggerHelp()" 
+          matTooltip="Swagger-UI Hilfe anzeigen" 
+          class="swagger-help-btn">
+    <mat-icon>help_outline</mat-icon>
+  </button>
 </mat-toolbar>
+
+<!-- Swagger-UI Help Popup -->
+@if (showSwaggerHelp) {
+  <div class="swagger-help-overlay" (click)="closeSwaggerHelp()">
+    <div class="swagger-help-popup" (click)="$event.stopPropagation()">
+      <div class="popup-header">
+        <h3>
+          <mat-icon>api</mat-icon>
+          Swagger-UI Tutorial
+        </h3>
+        <button mat-icon-button (click)="closeSwaggerHelp()" class="close-btn">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      
+      <div class="popup-content">
+        <h4>📝 POST Request mit Swagger-UI senden:</h4>
+        
+        <div class="step">
+          <strong>1. Swagger-UI öffnen:</strong>
+          <p>Navigiere zu <code>http://localhost:3000/api-docs</code></p>
+        </div>
+        
+        <div class="step">
+          <strong>2. POST Endpoint finden:</strong>
+          <p>Suche nach dem <span class="post-badge">POST</span> <code>/api/posts</code> Endpoint</p>
+        </div>
+        
+        <div class="step">
+          <strong>3. "Try it out" klicken:</strong>
+          <p>Klicke auf den blauen "Try it out" Button</p>
+        </div>
+        
+        <div class="step">
+          <strong>4. Request Body eingeben:</strong>
+          <div class="code-example">
+            <pre><code>{{ swaggerExampleJson }}</code></pre>
+          </div>
+        </div>
+        
+        <div class="step">
+          <strong>5. Execute klicken:</strong>
+          <p>Klicke auf "Execute" um den Request zu senden</p>
+        </div>
+        
+        <div class="tip">
+          <mat-icon>lightbulb</mat-icon>
+          <strong>Tipp:</strong> Die Response wird direkt in Swagger-UI angezeigt!
+        </div>
+      </div>
+    </div>
+  </div>
+}
 
 <!-- Main Content Container -->
 <div class="main-container">
