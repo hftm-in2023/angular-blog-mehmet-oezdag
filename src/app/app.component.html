@@ -70,6 +70,97 @@
           <mat-icon>lightbulb</mat-icon>
           <strong>Tipp:</strong> Die Response wird direkt in Swagger-UI angezeigt!
         </div>
+        
+        <div class="live-test-section">
+          <h4>🧪 Live Test - Probiere es direkt hier aus!</h4>
+          <p>Sende einen echten POST Request direkt aus dieser App:</p>
+          
+          <div class="test-form">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Post Titel</mat-label>
+              <input matInput 
+                     [(ngModel)]="testPost.title" 
+                     placeholder="z.B. Mein Test-Post">
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Post Inhalt</mat-label>
+              <textarea matInput 
+                        [(ngModel)]="testPost.content" 
+                        rows="3"
+                        placeholder="Beschreibe deinen Test-Post..."></textarea>
+            </mat-form-field>
+            
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Autor</mat-label>
+                <input matInput 
+                       [(ngModel)]="testPost.author" 
+                       placeholder="Dein Name">
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline">
+                <mat-label>Kategorie</mat-label>
+                <mat-select [(ngModel)]="testPost.category">
+                  <mat-option value="Test">Test</mat-option>
+                  <mat-option value="Angular">Angular</mat-option>
+                  <mat-option value="API">API</mat-option>
+                  <mat-option value="Tutorial">Tutorial</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            
+            <div class="form-actions">
+              <button mat-raised-button 
+                      color="primary" 
+                      (click)="sendLiveTestPost()"
+                      [disabled]="isTestLoading || !testPost.title || !testPost.content"
+                      class="test-button">
+                @if (isTestLoading) {
+                  <mat-spinner diameter="20"></mat-spinner>
+                  Sende Request...
+                } @else {
+                  <mat-icon>send</mat-icon>
+                  Live POST Request senden
+                }
+              </button>
+              
+              <button mat-button (click)="resetTestForm()" class="reset-button">
+                <mat-icon>refresh</mat-icon>
+                Formular zurücksetzen
+              </button>
+            </div>
+          </div>
+          
+          @if (testResult) {
+            <div class="test-result" [class.success]="testResult.success" [class.error]="!testResult.success">
+              <div class="result-header">
+                <mat-icon>{{ testResult.success ? 'check_circle' : 'error' }}</mat-icon>
+                <strong>{{ testResult.success ? 'Erfolg!' : 'Fehler!' }}</strong>
+              </div>
+              
+              @if (testResult.success) {
+                <div class="success-details">
+                  <p>✅ Post erfolgreich erstellt mit ID: <strong>{{ testResult.data?.id }}</strong></p>
+                  <p>📅 Erstellt am: {{ testResult.data?.publishDate }}</p>
+                  <p>🔗 Der neue Post ist jetzt in der Blog-Liste sichtbar!</p>
+                </div>
+              } @else {
+                <div class="error-details">
+                  <p>❌ Fehler beim Erstellen des Posts:</p>
+                  <code>{{ testResult.error }}</code>
+                </div>
+              }
+              
+              <div class="raw-response">
+                <details>
+                  <summary>Rohe API Response anzeigen</summary>
+                  <pre><code>{{ testResult.rawResponse }}</code></pre>
+                </details>
+              </div>
+            </div>
+          }
+        </div>
       </div>
     </div>
   </div>

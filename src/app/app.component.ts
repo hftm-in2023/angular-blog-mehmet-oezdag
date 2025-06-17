@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 
 // Angular Material Imports
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -14,6 +15,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatInputModule } from '@angular/material/input';
 
 // Services
 import { BlogService, BlogPost } from './services/blog.service';
@@ -35,6 +37,7 @@ import { DemoComponent } from './demo/demo.component';
     MatDividerModule,
     MatDialogModule,
     MatTooltipModule,
+    MatInputModule,
     DemoComponent
   ],
   templateUrl: './app.component.html',
@@ -57,6 +60,21 @@ export class AppComponent implements OnInit {
   isDarkMode = false;
   showSwaggerHelp = false;
   
+  // Live Test State
+  isTestLoading = false;
+  testPost = {
+    title: '',
+    content: '',
+    author: '',
+    category: 'Test'
+  };
+  testResult: {
+    success: boolean;
+    data?: any;
+    error?: string;
+    rawResponse?: string;
+  } | null = null;
+  
   // Swagger-UI Help Content
   swaggerExampleJson = `{
   "title": "Mein neuer Blog-Post",
@@ -67,7 +85,7 @@ export class AppComponent implements OnInit {
   "featured": false
 }`;
   
-  constructor(private blogService: BlogService) {}
+  constructor(private blogService: BlogService, private http: HttpClient) {}
 
   ngOnInit(): void {
     this.loadBlogData();
@@ -115,6 +133,63 @@ export class AppComponent implements OnInit {
    */
   closeSwaggerHelp(): void {
     this.showSwaggerHelp = false;
+  }
+
+  /**
+   * Sendet einen Live-Test POST Request
+   */
+  sendLiveTestPost(): void {
+    if (!this.testPost.title || !this.testPost.content) {
+      return;
+    }
+
+    this.isTestLoading = true;
+    this.testResult = null;
+
+    const postData = {
+      title: this.testPost.title,
+      content: this.testPost.content,
+      author: this.testPost.author || 'Test User',
+      category: this.testPost.category,
+      tags: ['live-test', 'api-demo'],
+      featured: false
+    };
+
+    this.http.post<any>('http://localhost:3000/api/posts', postData)
+      .subscribe({
+        next: (response) => {
+          this.testResult = {
+            success: true,
+            data: response,
+            rawResponse: JSON.stringify(response, null, 2)
+          };
+          this.isTestLoading = false;
+          
+          // Refresh blog posts to show the new post
+          this.loadBlogData();
+        },
+        error: (error) => {
+          this.testResult = {
+            success: false,
+            error: error.error?.error || error.message || 'Unbekannter Fehler',
+            rawResponse: JSON.stringify(error, null, 2)
+          };
+          this.isTestLoading = false;
+        }
+      });
+  }
+
+  /**
+   * Setzt das Test-Formular zurück
+   */
+  resetTestForm(): void {
+    this.testPost = {
+      title: '',
+      content: '',
+      author: '',
+      category: 'Test'
+    };
+    this.testResult = null;
   }
 
   /**

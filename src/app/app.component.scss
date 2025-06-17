@@ -738,6 +738,213 @@ $dark-border: #404040;
       }
     }
   }
+  
+  // Live Test Section
+  .live-test-section {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 2px solid rgba($primary-color, 0.2);
+    
+    h4 {
+      color: $text-primary;
+      margin: 0 0 16px 0;
+      font-size: 1.25rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .test-form {
+      background: rgba($primary-color, 0.03);
+      border: 1px solid rgba($primary-color, 0.1);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 16px 0;
+      
+      .full-width {
+        width: 100%;
+        margin-bottom: 16px;
+      }
+      
+      .form-row {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 16px;
+        
+        mat-form-field {
+          flex: 1;
+        }
+      }
+      
+      .form-actions {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        margin-top: 20px;
+        
+        .test-button {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          min-height: 44px;
+          
+          mat-spinner {
+            margin-right: 8px;
+          }
+        }
+        
+        .reset-button {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+      }
+    }
+    
+    .test-result {
+      margin-top: 20px;
+      padding: 16px;
+      border-radius: 8px;
+      border-left: 4px solid;
+      
+      &.success {
+        background: rgba($success-color, 0.1);
+        border-left-color: $success-color;
+        
+        .result-header {
+          color: $success-color;
+        }
+      }
+      
+      &.error {
+        background: rgba($warn-color, 0.1);
+        border-left-color: $warn-color;
+        
+        .result-header {
+          color: $warn-color;
+        }
+      }
+      
+      .result-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+        font-size: 1.1rem;
+        
+        mat-icon {
+          font-size: 20px;
+          width: 20px;
+          height: 20px;
+        }
+      }
+      
+      .success-details,
+      .error-details {
+        margin-bottom: 16px;
+        
+        p {
+          margin: 8px 0;
+          line-height: 1.5;
+        }
+        
+        code {
+          background: rgba($warn-color, 0.1);
+          padding: 4px 8px;
+          border-radius: 4px;
+          font-family: 'Courier New', monospace;
+          font-size: 0.875rem;
+        }
+      }
+      
+      .raw-response {
+        margin-top: 16px;
+        
+        details {
+          cursor: pointer;
+          
+          summary {
+            padding: 8px 0;
+            font-weight: 500;
+            color: $text-secondary;
+            
+            &:hover {
+              color: $text-primary;
+            }
+          }
+          
+          pre {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            padding: 12px;
+            margin: 8px 0 0 0;
+            overflow-x: auto;
+            max-height: 200px;
+            
+            code {
+              background: none;
+              padding: 0;
+              color: #495057;
+              font-size: 0.8rem;
+              line-height: 1.4;
+              white-space: pre;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Dark theme for live test section
+:host-context(.dark-theme) {
+  .swagger-help-popup {
+    .live-test-section {
+      .test-form {
+        background: rgba($primary-color, 0.1);
+        border-color: rgba($primary-color, 0.2);
+      }
+      
+      .test-result {
+        &.success {
+          background: rgba($success-color, 0.15);
+        }
+        
+        &.error {
+          background: rgba($warn-color, 0.15);
+        }
+        
+        .success-details,
+        .error-details {
+          code {
+            background: rgba($dark-text-secondary, 0.2);
+            color: $dark-text-primary;
+          }
+        }
+        
+        .raw-response {
+          details summary {
+            color: $dark-text-secondary;
+            
+            &:hover {
+              color: $dark-text-primary;
+            }
+          }
+          
+          pre {
+            background: #1a1a1a;
+            border-color: $dark-border;
+            
+            code {
+              color: #e0e0e0;
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 // Responsive styles for popup
@@ -767,6 +974,37 @@ $dark-border: #404040;
         .code-example pre {
           padding: 12px;
           font-size: 0.8rem;
+        }
+      }
+      
+      .live-test-section {
+        .test-form {
+          padding: 16px;
+          
+          .form-row {
+            flex-direction: column;
+            gap: 12px;
+          }
+          
+          .form-actions {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 8px;
+            
+            .test-button,
+            .reset-button {
+              justify-content: center;
+            }
+          }
+        }
+        
+        .test-result {
+          .raw-response {
+            details pre {
+              font-size: 0.75rem;
+              padding: 8px;
+            }
+          }
         }
       }
     }
