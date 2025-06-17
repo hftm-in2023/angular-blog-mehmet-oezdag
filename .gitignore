@@ -8,6 +8,7 @@
 
 # Node
 /node_modules
+backend/node_modules
 npm-debug.log
 yarn-error.log
 
@@ -40,3 +41,14 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Backend specific
+backend/node_modules/
+backend/.env
+
+# Quarkus/Maven
+quarkus-backend/target/
+quarkus-backend/.mvn/wrapper/maven-wrapper.jar
+*.log
+.maven/
+.quarkus/
