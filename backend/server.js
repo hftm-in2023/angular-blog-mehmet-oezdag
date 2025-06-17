@@ -287,6 +287,94 @@ app.get('/api/posts/:id', (req, res) => {
 
 /**
  * @swagger
+ * /api/posts:
+ *   post:
+ *     summary: Neuen Blog-Post erstellen
+ *     description: Erstellt einen neuen Blog-Post mit den übermittelten Daten
+ *     tags: [Blog Posts]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [title, content, author, category]
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 description: Titel des neuen Posts
+ *                 example: "Mein neuer Blog-Post"
+ *               content:
+ *                 type: string
+ *                 description: Inhalt des Posts
+ *                 example: "Das ist der Inhalt meines Posts..."
+ *               author:
+ *                 type: string
+ *                 description: Autor des Posts
+ *                 example: "Mehmet Oezdag"
+ *               category:
+ *                 type: string
+ *                 description: Kategorie des Posts
+ *                 example: "Angular"
+ *               tags:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 description: Tags für den Post
+ *                 example: ["tutorial", "angular"]
+ *               featured:
+ *                 type: boolean
+ *                 description: Ob der Post als Featured markiert werden soll
+ *                 example: false
+ *     responses:
+ *       201:
+ *         description: Blog-Post erfolgreich erstellt
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/BlogPost'
+ *       400:
+ *         description: Ungültige Eingabedaten
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+app.post('/api/posts', (req, res) => {
+  const { title, content, author, category, tags, featured } = req.body;
+  
+  // Validierung der Pflichtfelder
+  if (!title || !content || !author || !category) {
+    return res.status(400).json({ 
+      error: 'Pflichtfelder fehlen: title, content, author, category sind erforderlich' 
+    });
+  }
+  
+  // Neue Post-ID generieren
+  const newId = Math.max(...blogPosts.map(p => p.id)) + 1;
+  
+  // Neuen Post erstellen
+  const newPost = {
+    id: newId,
+    title,
+    content,
+    author,
+    publishDate: new Date().toISOString().split('T')[0], // Aktuelles Datum
+    category,
+    tags: tags || [],
+    featured: featured || false,
+    imageUrl: `https://picsum.photos/400/250?random=${newId}`
+  };
+  
+  // Post zum Array hinzufügen
+  blogPosts.push(newPost);
+  
+  // Erstellten Post zurückgeben
+  res.status(201).json(newPost);
+});
+
+/**
+ * @swagger
  * /api/categories:
  *   get:
  *     summary: Alle verfügbaren Kategorien abrufen
