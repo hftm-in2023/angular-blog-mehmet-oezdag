@@ -38,43 +38,43 @@ import { DemoComponent } from './demo/demo.component';
     MatDialogModule,
     MatTooltipModule,
     MatInputModule,
-    DemoComponent
+    DemoComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
 export class AppComponent implements OnInit {
   title = 'Angular Blog - Mehmet Oezdag';
-  
+
   // Blog-Daten
   blogPosts: BlogPost[] = [];
   categories: string[] = [];
-  selectedCategory: string = '';
+  selectedCategory = '';
   isLoading = false;
   showDemo = false;
-  
+
   // Filter-Optionen
   showOnlyFeatured = false;
-  
+
   // UI State
   isDarkMode = false;
   showSwaggerHelp = false;
-  
+
   // Live Test State
   isTestLoading = false;
   testPost = {
     title: '',
     content: '',
     author: '',
-    category: 'Test'
+    category: 'Test',
   };
   testResult: {
     success: boolean;
-    data?: any;
+    data?: BlogPost;
     error?: string;
     rawResponse?: string;
   } | null = null;
-  
+
   // Swagger-UI Help Content
   swaggerExampleJson = `{
   "title": "Mein neuer Blog-Post",
@@ -84,8 +84,11 @@ export class AppComponent implements OnInit {
   "tags": ["tutorial", "angular"],
   "featured": false
 }`;
-  
-  constructor(private blogService: BlogService, private http: HttpClient) {}
+
+  constructor(
+    private blogService: BlogService,
+    private http: HttpClient,
+  ) {}
 
   ngOnInit(): void {
     this.loadBlogData();
@@ -152,31 +155,30 @@ export class AppComponent implements OnInit {
       author: this.testPost.author || 'Test User',
       category: this.testPost.category,
       tags: ['live-test', 'api-demo'],
-      featured: false
+      featured: false,
     };
 
-    this.http.post<any>('http://localhost:3000/api/posts', postData)
-      .subscribe({
-        next: (response) => {
-          this.testResult = {
-            success: true,
-            data: response,
-            rawResponse: JSON.stringify(response, null, 2)
-          };
-          this.isTestLoading = false;
-          
-          // Refresh blog posts to show the new post
-          this.loadBlogData();
-        },
-        error: (error) => {
-          this.testResult = {
-            success: false,
-            error: error.error?.error || error.message || 'Unbekannter Fehler',
-            rawResponse: JSON.stringify(error, null, 2)
-          };
-          this.isTestLoading = false;
-        }
-      });
+    this.http.post<BlogPost>('http://localhost:3000/api/posts', postData).subscribe({
+      next: (response) => {
+        this.testResult = {
+          success: true,
+          data: response,
+          rawResponse: JSON.stringify(response, null, 2),
+        };
+        this.isTestLoading = false;
+
+        // Refresh blog posts to show the new post
+        this.loadBlogData();
+      },
+      error: (error) => {
+        this.testResult = {
+          success: false,
+          error: error.error?.error || error.message || 'Unbekannter Fehler',
+          rawResponse: JSON.stringify(error, null, 2),
+        };
+        this.isTestLoading = false;
+      },
+    });
   }
 
   /**
@@ -187,7 +189,7 @@ export class AppComponent implements OnInit {
       title: '',
       content: '',
       author: '',
-      category: 'Test'
+      category: 'Test',
     };
     this.testResult = null;
   }
@@ -197,7 +199,7 @@ export class AppComponent implements OnInit {
    */
   loadBlogData(): void {
     this.isLoading = true;
-    
+
     // Lade Posts und Kategorien parallel
     this.blogService.getPosts().subscribe({
       next: (posts) => {
@@ -207,16 +209,16 @@ export class AppComponent implements OnInit {
       error: (error) => {
         console.error('Fehler beim Laden der Blog-Posts:', error);
         this.isLoading = false;
-      }
+      },
     });
-    
+
     this.blogService.getCategories().subscribe({
       next: (categories) => {
         this.categories = categories;
       },
       error: (error) => {
         console.error('Fehler beim Laden der Kategorien:', error);
-      }
+      },
     });
   }
 
@@ -225,11 +227,11 @@ export class AppComponent implements OnInit {
    */
   onCategoryChange(): void {
     this.isLoading = true;
-    
-    const request = this.selectedCategory 
+
+    const request = this.selectedCategory
       ? this.blogService.getPostsByCategory(this.selectedCategory)
       : this.blogService.getPosts();
-    
+
     request.subscribe({
       next: (posts) => {
         this.blogPosts = posts;
@@ -238,7 +240,7 @@ export class AppComponent implements OnInit {
       error: (error) => {
         console.error('Fehler beim Filtern der Posts:', error);
         this.isLoading = false;
-      }
+      },
     });
   }
 
@@ -255,7 +257,7 @@ export class AppComponent implements OnInit {
    */
   private filterPosts(): void {
     this.isLoading = true;
-    
+
     let request;
     if (this.showOnlyFeatured) {
       request = this.blogService.getFeaturedPosts();
@@ -264,7 +266,7 @@ export class AppComponent implements OnInit {
     } else {
       request = this.blogService.getPosts();
     }
-    
+
     request.subscribe({
       next: (posts) => {
         this.blogPosts = posts;
@@ -273,7 +275,7 @@ export class AppComponent implements OnInit {
       error: (error) => {
         console.error('Fehler beim Filtern der Posts:', error);
         this.isLoading = false;
-      }
+      },
     });
   }
 
@@ -301,14 +303,14 @@ export class AppComponent implements OnInit {
     return date.toLocaleDateString('de-DE', {
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
     });
   }
 
   /**
    * Kürzt den Content für die Vorschau
    */
-  getPreviewContent(content: string, maxLength: number = 150): string {
+  getPreviewContent(content: string, maxLength = 150): string {
     if (content.length <= maxLength) {
       return content;
     }
@@ -319,10 +321,10 @@ export class AppComponent implements OnInit {
    * Gibt die Farbe für eine Kategorie zurück
    */
   getCategoryColor(category: string): string {
-    const colors: { [key: string]: string } = {
-      'Angular': 'primary',
-      'CSS': 'accent',
-      'TypeScript': 'warn'
+    const colors: Record<string, string> = {
+      Angular: 'primary',
+      CSS: 'accent',
+      TypeScript: 'warn',
     };
     return colors[category] || 'primary';
   }

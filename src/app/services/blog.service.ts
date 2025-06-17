@@ -15,27 +15,27 @@ export interface BlogPost {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class BlogService {
   private apiUrl = 'http://localhost:3000/api';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   /**
    * Lädt alle Blog-Posts oder filtert nach Kategorie/Featured Status
    */
   getPosts(category?: string, featured?: boolean): Observable<BlogPost[]> {
     let params = new HttpParams();
-    
+
     if (category) {
       params = params.set('category', category);
     }
-    
+
     if (featured !== undefined) {
       params = params.set('featured', featured.toString());
     }
-    
+
     return this.http.get<BlogPost[]>(`${this.apiUrl}/posts`, { params });
   }
 
@@ -66,4 +66,4 @@ export class BlogService {
   getPostsByCategory(category: string): Observable<BlogPost[]> {
     return this.getPosts(category);
   }
-} 
+}

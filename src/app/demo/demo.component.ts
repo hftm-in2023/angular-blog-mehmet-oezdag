@@ -47,15 +47,15 @@ export interface User {
     MatChipsModule,
     MatTabsModule,
     MatProgressBarModule,
-    MatDividerModule
+    MatDividerModule,
   ],
   templateUrl: './demo.component.html',
-  styleUrl: './demo.component.scss'
+  styleUrl: './demo.component.scss',
 })
 export class DemoComponent {
   // Properties for different demos
   title = 'Angular Konzepte Demo';
-  
+
   // For NgModel 2-way binding
   userName = '';
   userEmail = '';
@@ -63,11 +63,11 @@ export class DemoComponent {
   selectedTheme = 'blue';
   isNewsletterSubscribed = false;
   selectedGender = 'male';
-  
+
   // For @if and @switch demonstrations
   showAdvancedOptions = false;
   currentView: 'list' | 'grid' | 'cards' = 'list';
-  
+
   // For @for demonstration
   tasks: Task[] = [
     { id: 1, title: 'Angular Material hinzufügen', completed: true, priority: 'high' },
@@ -75,75 +75,75 @@ export class DemoComponent {
     { id: 3, title: 'Event Binding implementieren', completed: false, priority: 'high' },
     { id: 4, title: 'NgClass und NgStyle testen', completed: false, priority: 'low' },
   ];
-  
+
   colors = ['red', 'green', 'blue', 'purple', 'orange'];
-  
+
   // For NgClass and NgStyle
   isDarkMode = false;
   backgroundOpacity = 50;
   borderRadius = 8;
-  
+
   // For click events
   clickCount = 0;
   lastClickedTask: string | null = null;
-  
+
   // Available themes for select
   themes = [
     { value: 'blue', label: 'Blau' },
     { value: 'red', label: 'Rot' },
     { value: 'green', label: 'Grün' },
-    { value: 'purple', label: 'Violett' }
+    { value: 'purple', label: 'Violett' },
   ];
 
   // Event binding methods
   onButtonClick(): void {
     this.clickCount++;
   }
-  
+
   onTaskClick(taskTitle: string): void {
     this.lastClickedTask = taskTitle;
   }
-  
+
   onThemeChange(): void {
-    console.log('Theme geändert zu:', this.selectedTheme);
+    // Theme changed successfully
   }
-  
+
   toggleAdvancedOptions(): void {
     this.showAdvancedOptions = !this.showAdvancedOptions;
   }
-  
+
   toggleDarkMode(): void {
     this.isDarkMode = !this.isDarkMode;
   }
-  
+
   addNewTask(): void {
     const newTask: Task = {
       id: this.tasks.length + 1,
       title: `Neue Aufgabe ${this.tasks.length + 1}`,
       completed: false,
-      priority: 'medium'
+      priority: 'medium',
     };
     this.tasks.push(newTask);
   }
-  
+
   toggleTaskCompletion(task: Task): void {
     task.completed = !task.completed;
   }
-  
+
   removeTask(taskId: number): void {
-    this.tasks = this.tasks.filter(task => task.id !== taskId);
+    this.tasks = this.tasks.filter((task) => task.id !== taskId);
   }
-  
+
   // Methods for NgClass demonstration
   getTaskClasses(task: Task): object {
     return {
       'task-completed': task.completed,
       'task-high-priority': task.priority === 'high',
       'task-medium-priority': task.priority === 'medium',
-      'task-low-priority': task.priority === 'low'
+      'task-low-priority': task.priority === 'low',
     };
   }
-  
+
   getGridItemClasses(task: Task, isEven: boolean): object {
     return {
       'even-item': isEven,
@@ -151,10 +151,10 @@ export class DemoComponent {
       'task-completed': task.completed,
       'task-high-priority': task.priority === 'high',
       'task-medium-priority': task.priority === 'medium',
-      'task-low-priority': task.priority === 'low'
+      'task-low-priority': task.priority === 'low',
     };
   }
-  
+
   getCardItemClasses(task: Task, isFirst: boolean, isLast: boolean): object {
     return {
       'first-card': isFirst,
@@ -162,51 +162,51 @@ export class DemoComponent {
       'task-completed': task.completed,
       'task-high-priority': task.priority === 'high',
       'task-medium-priority': task.priority === 'medium',
-      'task-low-priority': task.priority === 'low'
+      'task-low-priority': task.priority === 'low',
     };
   }
-  
+
   getCardClasses(): object {
     return {
       'dark-theme': this.isDarkMode,
       'light-theme': !this.isDarkMode,
-      'advanced-visible': this.showAdvancedOptions
+      'advanced-visible': this.showAdvancedOptions,
     };
   }
-  
+
   // Methods for NgStyle demonstration
   getBackgroundStyle(): object {
     return {
       'background-color': this.getThemeColor(),
-      'opacity': this.backgroundOpacity / 100,
-      'border-radius.px': this.borderRadius
+      opacity: this.backgroundOpacity / 100,
+      'border-radius.px': this.borderRadius,
     };
   }
-  
+
   getThemeColor(): string {
-    const themeColors: { [key: string]: string } = {
-      'blue': '#2196F3',
-      'red': '#F44336',
-      'green': '#4CAF50',
-      'purple': '#9C27B0'
+    const themeColors: Record<string, string> = {
+      blue: '#2196F3',
+      red: '#F44336',
+      green: '#4CAF50',
+      purple: '#9C27B0',
     };
     return themeColors[this.selectedTheme] || '#2196F3';
   }
-  
+
   getUserInfo(): User {
     return {
       name: this.userName,
       email: this.userEmail,
-      age: this.userAge
+      age: this.userAge,
     };
   }
-  
+
   getCompletionPercentage(): number {
     if (this.tasks.length === 0) return 0;
-    return (this.tasks.filter(task => task.completed).length / this.tasks.length) * 100;
+    return (this.tasks.filter((task) => task.completed).length / this.tasks.length) * 100;
   }
-  
+
   getCompletedTasksCount(): number {
-    return this.tasks.filter(task => task.completed).length;
+    return this.tasks.filter((task) => task.completed).length;
   }
 }
