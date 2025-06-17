@@ -2,39 +2,44 @@
 <mat-toolbar color="primary" class="blog-header">
   <mat-icon>article</mat-icon>
   <span class="title">{{ title }}</span>
-  
+
   <div class="header-spacer"></div>
-  
-  <button mat-icon-button (click)="toggleDemo()" 
-          matTooltip="Demo-Komponente anzeigen/verbergen">
+
+  <button mat-icon-button (click)="toggleDemo()" matTooltip="Demo-Komponente anzeigen/verbergen">
     <mat-icon>{{ showDemo ? 'visibility_off' : 'visibility' }}</mat-icon>
   </button>
-  
-  <button mat-icon-button (click)="toggleDarkMode()" 
-          matTooltip="Dark Mode umschalten">
+
+  <button mat-icon-button (click)="toggleDarkMode()" matTooltip="Dark Mode umschalten">
     <mat-icon>{{ isDarkMode ? 'light_mode' : 'dark_mode' }}</mat-icon>
   </button>
-  
-  <button mat-icon-button (click)="toggleSwaggerHelp()" 
-          matTooltip="Swagger-UI Hilfe anzeigen" 
-          class="swagger-help-btn">
+
+  <button
+    mat-icon-button
+    (click)="toggleSwaggerHelp()"
+    matTooltip="Swagger-UI Hilfe anzeigen"
+    class="swagger-help-btn"
+  >
     <mat-icon>help_outline</mat-icon>
   </button>
 </mat-toolbar>
 
 <!-- Swagger-UI Help Popup -->
 @if (showSwaggerHelp) {
-  <div class="swagger-help-overlay" 
-       (click)="closeSwaggerHelp()" 
-       (keydown.escape)="closeSwaggerHelp()"
-       tabindex="0"
-       role="dialog"
-       aria-modal="true"
-       aria-labelledby="swagger-help-title">
-    <div class="swagger-help-popup" 
-         (click)="$event.stopPropagation()"
-         (keydown)="$event.stopPropagation()"
-         role="document">
+  <div
+    class="swagger-help-overlay"
+    (click)="closeSwaggerHelp()"
+    (keydown.escape)="closeSwaggerHelp()"
+    tabindex="0"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="swagger-help-title"
+  >
+    <div
+      class="swagger-help-popup"
+      (click)="$event.stopPropagation()"
+      (keydown)="$event.stopPropagation()"
+      role="document"
+    >
       <div class="popup-header">
         <h3 id="swagger-help-title">
           <mat-icon>api</mat-icon>
@@ -44,70 +49,70 @@
           <mat-icon>close</mat-icon>
         </button>
       </div>
-      
+
       <div class="popup-content">
         <h4>📝 POST Request mit Swagger-UI senden:</h4>
-        
+
         <div class="step">
           <strong>1. Swagger-UI öffnen:</strong>
           <p>Navigiere zu <code>http://localhost:3000/api-docs</code></p>
         </div>
-        
+
         <div class="step">
           <strong>2. POST Endpoint finden:</strong>
-          <p>Suche nach dem <span class="post-badge">POST</span> <code>/api/posts</code> Endpoint</p>
+          <p>
+            Suche nach dem <span class="post-badge">POST</span> <code>/api/posts</code> Endpoint
+          </p>
         </div>
-        
+
         <div class="step">
           <strong>3. "Try it out" klicken:</strong>
           <p>Klicke auf den blauen "Try it out" Button</p>
         </div>
-        
+
         <div class="step">
           <strong>4. Request Body eingeben:</strong>
           <div class="code-example">
             <pre><code>{{ swaggerExampleJson }}</code></pre>
           </div>
         </div>
-        
+
         <div class="step">
           <strong>5. Execute klicken:</strong>
           <p>Klicke auf "Execute" um den Request zu senden</p>
         </div>
-        
+
         <div class="tip">
           <mat-icon>lightbulb</mat-icon>
           <strong>Tipp:</strong> Die Response wird direkt in Swagger-UI angezeigt!
         </div>
-        
+
         <div class="live-test-section">
           <h4>🧪 Live Test - Probiere es direkt hier aus!</h4>
           <p>Sende einen echten POST Request direkt aus dieser App:</p>
-          
+
           <div class="test-form">
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>Post Titel</mat-label>
-              <input matInput 
-                     [(ngModel)]="testPost.title" 
-                     placeholder="z.B. Mein Test-Post">
+              <input matInput [(ngModel)]="testPost.title" placeholder="z.B. Mein Test-Post" />
             </mat-form-field>
-            
+
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>Post Inhalt</mat-label>
-              <textarea matInput 
-                        [(ngModel)]="testPost.content" 
-                        rows="3"
-                        placeholder="Beschreibe deinen Test-Post..."></textarea>
+              <textarea
+                matInput
+                [(ngModel)]="testPost.content"
+                rows="3"
+                placeholder="Beschreibe deinen Test-Post..."
+              ></textarea>
             </mat-form-field>
-            
+
             <div class="form-row">
               <mat-form-field appearance="outline">
                 <mat-label>Autor</mat-label>
-                <input matInput 
-                       [(ngModel)]="testPost.author" 
-                       placeholder="Dein Name">
+                <input matInput [(ngModel)]="testPost.author" placeholder="Dein Name" />
               </mat-form-field>
-              
+
               <mat-form-field appearance="outline">
                 <mat-label>Kategorie</mat-label>
                 <mat-select [(ngModel)]="testPost.category">
@@ -118,13 +123,15 @@
                 </mat-select>
               </mat-form-field>
             </div>
-            
+
             <div class="form-actions">
-              <button mat-raised-button 
-                      color="primary" 
-                      (click)="sendLiveTestPost()"
-                      [disabled]="isTestLoading || !testPost.title || !testPost.content"
-                      class="test-button">
+              <button
+                mat-raised-button
+                color="primary"
+                (click)="sendLiveTestPost()"
+                [disabled]="isTestLoading || !testPost.title || !testPost.content"
+                class="test-button"
+              >
                 @if (isTestLoading) {
                   <mat-spinner diameter="20"></mat-spinner>
                   Sende Request...
@@ -135,24 +142,30 @@
                   </ng-container>
                 }
               </button>
-              
+
               <button mat-button (click)="resetTestForm()" class="reset-button">
                 <mat-icon>refresh</mat-icon>
                 Formular zurücksetzen
               </button>
             </div>
           </div>
-          
+
           @if (testResult) {
-            <div class="test-result" [class.success]="testResult.success" [class.error]="!testResult.success">
+            <div
+              class="test-result"
+              [class.success]="testResult.success"
+              [class.error]="!testResult.success"
+            >
               <div class="result-header">
                 <mat-icon>{{ testResult.success ? 'check_circle' : 'error' }}</mat-icon>
                 <strong>{{ testResult.success ? 'Erfolg!' : 'Fehler!' }}</strong>
               </div>
-              
+
               @if (testResult.success) {
                 <div class="success-details">
-                  <p>✅ Post erfolgreich erstellt mit ID: <strong>{{ testResult.data?.id }}</strong></p>
+                  <p>
+                    ✅ Post erfolgreich erstellt mit ID: <strong>{{ testResult.data?.id }}</strong>
+                  </p>
                   <p>📅 Erstellt am: {{ testResult.data?.publishDate }}</p>
                   <p>🔗 Der neue Post ist jetzt in der Blog-Liste sichtbar!</p>
                 </div>
@@ -162,7 +175,7 @@
                   <code>{{ testResult.error }}</code>
                 </div>
               }
-              
+
               <div class="raw-response">
                 <details>
                   <summary>Rohe API Response anzeigen</summary>
@@ -179,7 +192,6 @@
 
 <!-- Main Content Container -->
 <div class="main-container">
-  
   <!-- Demo Component (Conditional Display with @if) -->
   @if (showDemo) {
     <div class="demo-section">
@@ -194,50 +206,46 @@
       </mat-card>
     </div>
   }
-  
+
   <!-- Blog Section -->
   <div class="blog-section">
-    
     <!-- Filter Controls -->
     <div class="filter-controls">
       <mat-card class="filter-card">
         <mat-card-content>
           <div class="filter-row">
-            
             <!-- Category Filter -->
             <mat-form-field appearance="outline" class="category-select">
               <mat-label>Kategorie auswählen</mat-label>
-              <mat-select [(ngModel)]="selectedCategory" 
-                         (selectionChange)="onCategoryChange()">
+              <mat-select [(ngModel)]="selectedCategory" (selectionChange)="onCategoryChange()">
                 <mat-option value="">Alle Kategorien</mat-option>
                 @for (category of categories; track category) {
                   <mat-option [value]="category">{{ category }}</mat-option>
                 }
               </mat-select>
             </mat-form-field>
-            
+
             <!-- Featured Filter -->
-            <button mat-raised-button 
-                    [color]="showOnlyFeatured ? 'accent' : 'primary'"
-                    (click)="toggleFeaturedFilter()"
-                    class="featured-filter">
+            <button
+              mat-raised-button
+              [color]="showOnlyFeatured ? 'accent' : 'primary'"
+              (click)="toggleFeaturedFilter()"
+              class="featured-filter"
+            >
               <mat-icon>{{ showOnlyFeatured ? 'star' : 'star_border' }}</mat-icon>
               {{ showOnlyFeatured ? 'Alle anzeigen' : 'Nur Featured' }}
             </button>
-            
+
             <!-- Reset Filter -->
-            <button mat-raised-button color="warn" 
-                    (click)="resetFilters()"
-                    class="reset-filter">
+            <button mat-raised-button color="warn" (click)="resetFilters()" class="reset-filter">
               <mat-icon>refresh</mat-icon>
               Filter zurücksetzen
             </button>
-            
           </div>
         </mat-card-content>
       </mat-card>
     </div>
-    
+
     <!-- Loading Indicator with @if -->
     @if (isLoading) {
       <div class="loading-container">
@@ -245,17 +253,25 @@
         <p>Blog-Posts werden geladen...</p>
       </div>
     }
-    
+
     <!-- Blog Posts Grid with @for -->
     @if (!isLoading) {
       <div class="blog-posts-grid">
-        @for (post of blogPosts; track post.id; let i = $index; let isFirst = $first; let isLast = $last; let isEven = $even) {
-          <mat-card class="blog-post-card" 
-                    [class.featured]="post.featured"
-                    [class.first-post]="isFirst"
-                    [class.last-post]="isLast"
-                    [class.even-post]="isEven">
-            
+        @for (
+          post of blogPosts;
+          track post.id;
+          let i = $index;
+          let isFirst = $first;
+          let isLast = $last;
+          let isEven = $even
+        ) {
+          <mat-card
+            class="blog-post-card"
+            [class.featured]="post.featured"
+            [class.first-post]="isFirst"
+            [class.last-post]="isLast"
+            [class.even-post]="isEven"
+          >
             <!-- Featured Badge with @if -->
             @if (post.featured) {
               <div class="featured-badge">
@@ -263,27 +279,24 @@
                 Featured
               </div>
             }
-            
+
             <!-- Post Image -->
             <div class="post-image-container">
-              <img [ngSrc]="post.imageUrl" 
-                   [alt]="post.title" 
-                   class="post-image"
-                   loading="lazy">
+              <img [ngSrc]="post.imageUrl" [alt]="post.title" class="post-image" loading="lazy" />
             </div>
-            
+
             <mat-card-header>
               <mat-card-title>{{ post.title }}</mat-card-title>
               <mat-card-subtitle>
                 von {{ post.author }} • {{ formatDate(post.publishDate) }}
               </mat-card-subtitle>
             </mat-card-header>
-            
+
             <mat-card-content>
               <p class="post-preview">
                 {{ getPreviewContent(post.content) }}
               </p>
-              
+
               <div class="post-meta">
                 <mat-chip-set>
                   <mat-chip [color]="getCategoryColor(post.category)">
@@ -295,7 +308,7 @@
                 </mat-chip-set>
               </div>
             </mat-card-content>
-            
+
             <mat-card-actions align="end">
               <button mat-button color="primary">
                 <mat-icon>read_more</mat-icon>
@@ -308,7 +321,6 @@
                 <mat-icon>bookmark_border</mat-icon>
               </button>
             </mat-card-actions>
-            
           </mat-card>
         } @empty {
           <!-- Empty State with @empty -->
@@ -334,9 +346,7 @@
         }
       </div>
     }
-    
   </div>
-  
 </div>
 
 <!-- Footer -->

@@ -8,15 +8,8 @@ import { BlogService } from './services/blog.service';
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        AppComponent,
-        HttpClientTestingModule,
-        NoopAnimationsModule
-      ],
-      providers: [
-        BlogService,
-        provideRouter([])
-      ]
+      imports: [AppComponent, HttpClientTestingModule, NoopAnimationsModule],
+      providers: [BlogService, provideRouter([])],
     }).compileComponents();
   });
 
