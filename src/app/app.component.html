@@ -9,7 +9,171 @@
           matTooltip="Demo-Komponente anzeigen/verbergen">
     <mat-icon>{{ showDemo ? 'visibility_off' : 'visibility' }}</mat-icon>
   </button>
+  
+  <button mat-icon-button (click)="toggleDarkMode()" 
+          matTooltip="Dark Mode umschalten">
+    <mat-icon>{{ isDarkMode ? 'light_mode' : 'dark_mode' }}</mat-icon>
+  </button>
+  
+  <button mat-icon-button (click)="toggleSwaggerHelp()" 
+          matTooltip="Swagger-UI Hilfe anzeigen" 
+          class="swagger-help-btn">
+    <mat-icon>help_outline</mat-icon>
+  </button>
 </mat-toolbar>
+
+<!-- Swagger-UI Help Popup -->
+@if (showSwaggerHelp) {
+  <div class="swagger-help-overlay" 
+       (click)="closeSwaggerHelp()" 
+       (keydown.escape)="closeSwaggerHelp()"
+       tabindex="0"
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="swagger-help-title">
+    <div class="swagger-help-popup" 
+         (click)="$event.stopPropagation()"
+         (keydown)="$event.stopPropagation()"
+         role="document">
+      <div class="popup-header">
+        <h3 id="swagger-help-title">
+          <mat-icon>api</mat-icon>
+          Swagger-UI Tutorial
+        </h3>
+        <button mat-icon-button (click)="closeSwaggerHelp()" class="close-btn">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      
+      <div class="popup-content">
+        <h4>📝 POST Request mit Swagger-UI senden:</h4>
+        
+        <div class="step">
+          <strong>1. Swagger-UI öffnen:</strong>
+          <p>Navigiere zu <code>http://localhost:3000/api-docs</code></p>
+        </div>
+        
+        <div class="step">
+          <strong>2. POST Endpoint finden:</strong>
+          <p>Suche nach dem <span class="post-badge">POST</span> <code>/api/posts</code> Endpoint</p>
+        </div>
+        
+        <div class="step">
+          <strong>3. "Try it out" klicken:</strong>
+          <p>Klicke auf den blauen "Try it out" Button</p>
+        </div>
+        
+        <div class="step">
+          <strong>4. Request Body eingeben:</strong>
+          <div class="code-example">
+            <pre><code>{{ swaggerExampleJson }}</code></pre>
+          </div>
+        </div>
+        
+        <div class="step">
+          <strong>5. Execute klicken:</strong>
+          <p>Klicke auf "Execute" um den Request zu senden</p>
+        </div>
+        
+        <div class="tip">
+          <mat-icon>lightbulb</mat-icon>
+          <strong>Tipp:</strong> Die Response wird direkt in Swagger-UI angezeigt!
+        </div>
+        
+        <div class="live-test-section">
+          <h4>🧪 Live Test - Probiere es direkt hier aus!</h4>
+          <p>Sende einen echten POST Request direkt aus dieser App:</p>
+          
+          <div class="test-form">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Post Titel</mat-label>
+              <input matInput 
+                     [(ngModel)]="testPost.title" 
+                     placeholder="z.B. Mein Test-Post">
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Post Inhalt</mat-label>
+              <textarea matInput 
+                        [(ngModel)]="testPost.content" 
+                        rows="3"
+                        placeholder="Beschreibe deinen Test-Post..."></textarea>
+            </mat-form-field>
+            
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Autor</mat-label>
+                <input matInput 
+                       [(ngModel)]="testPost.author" 
+                       placeholder="Dein Name">
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline">
+                <mat-label>Kategorie</mat-label>
+                <mat-select [(ngModel)]="testPost.category">
+                  <mat-option value="Test">Test</mat-option>
+                  <mat-option value="Angular">Angular</mat-option>
+                  <mat-option value="API">API</mat-option>
+                  <mat-option value="Tutorial">Tutorial</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            
+            <div class="form-actions">
+              <button mat-raised-button 
+                      color="primary" 
+                      (click)="sendLiveTestPost()"
+                      [disabled]="isTestLoading || !testPost.title || !testPost.content"
+                      class="test-button">
+                @if (isTestLoading) {
+                  <mat-spinner diameter="20"></mat-spinner>
+                  Sende Request...
+                } @else {
+                  <mat-icon>send</mat-icon>
+                  Live POST Request senden
+                }
+              </button>
+              
+              <button mat-button (click)="resetTestForm()" class="reset-button">
+                <mat-icon>refresh</mat-icon>
+                Formular zurücksetzen
+              </button>
+            </div>
+          </div>
+          
+          @if (testResult) {
+            <div class="test-result" [class.success]="testResult.success" [class.error]="!testResult.success">
+              <div class="result-header">
+                <mat-icon>{{ testResult.success ? 'check_circle' : 'error' }}</mat-icon>
+                <strong>{{ testResult.success ? 'Erfolg!' : 'Fehler!' }}</strong>
+              </div>
+              
+              @if (testResult.success) {
+                <div class="success-details">
+                  <p>✅ Post erfolgreich erstellt mit ID: <strong>{{ testResult.data?.id }}</strong></p>
+                  <p>📅 Erstellt am: {{ testResult.data?.publishDate }}</p>
+                  <p>🔗 Der neue Post ist jetzt in der Blog-Liste sichtbar!</p>
+                </div>
+              } @else {
+                <div class="error-details">
+                  <p>❌ Fehler beim Erstellen des Posts:</p>
+                  <code>{{ testResult.error }}</code>
+                </div>
+              }
+              
+              <div class="raw-response">
+                <details>
+                  <summary>Rohe API Response anzeigen</summary>
+                  <pre><code>{{ testResult.rawResponse }}</code></pre>
+                </details>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+}
 
 <!-- Main Content Container -->
 <div class="main-container">
@@ -100,7 +264,7 @@
             
             <!-- Post Image -->
             <div class="post-image-container">
-              <img [src]="post.imageUrl" 
+              <img [ngSrc]="post.imageUrl" 
                    [alt]="post.title" 
                    class="post-image"
                    loading="lazy">

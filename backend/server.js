@@ -1,5 +1,7 @@
 const express = require('express');
 const cors = require('cors');
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
 const app = express();
 const PORT = 3000;
 
@@ -11,6 +13,129 @@ app.use(cors({
 }));
 
 app.use(express.json());
+
+// Swagger-Konfiguration
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Angular Blog API',
+      version: '1.0.0',
+      description: 'REST API für Angular Blog - Mehmet Oezdag',
+      contact: {
+        name: 'Mehmet Oezdag',
+        email: 'mehmet.oezdag@hftm.ch'
+      },
+      license: {
+        name: 'MIT',
+        url: 'https://opensource.org/licenses/MIT'
+      }
+    },
+    servers: [
+      {
+        url: 'http://localhost:3000',
+        description: 'Development Server'
+      },
+      {
+        url: 'https://your-production-url.com',
+        description: 'Production Server'
+      }
+    ],
+    components: {
+      schemas: {
+        BlogPost: {
+          type: 'object',
+          required: ['id', 'title', 'content', 'author', 'publishDate', 'category'],
+          properties: {
+            id: {
+              type: 'integer',
+              description: 'Eindeutige Post-ID',
+              example: 1
+            },
+            title: {
+              type: 'string',
+              description: 'Titel des Blog-Posts',
+              example: 'Angular Control Flow - Die Revolution der Templates'
+            },
+            content: {
+              type: 'string',
+              description: 'Vollständiger Inhalt des Posts',
+              example: 'Angular 17 führt eine neue Control Flow Syntax ein...'
+            },
+            author: {
+              type: 'string',
+              description: 'Autor des Posts',
+              example: 'Mehmet Oezdag'
+            },
+            publishDate: {
+              type: 'string',
+              format: 'date',
+              description: 'Veröffentlichungsdatum (YYYY-MM-DD)',
+              example: '2024-01-15'
+            },
+            category: {
+              type: 'string',
+              description: 'Kategorie des Posts',
+              example: 'Angular'
+            },
+            tags: {
+              type: 'array',
+              items: {
+                type: 'string'
+              },
+              description: 'Tags für den Post',
+              example: ['Angular', 'Control Flow', 'Templates']
+            },
+            featured: {
+              type: 'boolean',
+              description: 'Ob der Post als Featured markiert ist',
+              example: true
+            },
+            imageUrl: {
+              type: 'string',
+              format: 'uri',
+              description: 'URL des Titelbilds',
+              example: 'https://picsum.photos/400/250?random=1'
+            }
+          }
+        },
+        Error: {
+          type: 'object',
+          properties: {
+            error: {
+              type: 'string',
+              description: 'Fehlermeldung',
+              example: 'Post not found'
+            }
+          }
+        }
+      }
+    }
+  },
+  apis: ['./server.js'], // Pfad zu den API-Dateien
+};
+
+const specs = swaggerJsdoc(swaggerOptions);
+
+// Swagger-UI Route
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
+  explorer: true,
+  customCss: '.swagger-ui .topbar { display: none }',
+  customSiteTitle: 'Angular Blog API Documentation'
+}));
+
+// Root-Route mit API-Info
+app.get('/', (req, res) => {
+  res.json({
+    message: 'Angular Blog API - Mehmet Oezdag',
+    version: '1.0.0',
+    documentation: `http://localhost:${PORT}/api-docs`,
+    endpoints: {
+      posts: `http://localhost:${PORT}/api/posts`,
+      categories: `http://localhost:${PORT}/api/categories`
+    }
+  });
+});
 
 // Mock Blog-Daten
 const blogPosts = [
@@ -71,7 +196,38 @@ const blogPosts = [
   }
 ];
 
-// API Endpoints
+/**
+ * @swagger
+ * /api/posts:
+ *   get:
+ *     summary: Alle Blog-Posts oder gefilterte Posts abrufen
+ *     description: Lädt alle Blog-Posts oder filtert nach Kategorie und/oder Featured Status
+ *     tags: [Blog Posts]
+ *     parameters:
+ *       - in: query
+ *         name: category
+ *         schema:
+ *           type: string
+ *         description: Filtert Posts nach Kategorie
+ *         example: Angular
+ *       - in: query
+ *         name: featured
+ *         schema:
+ *           type: boolean
+ *         description: Filtert nur Featured Posts
+ *         example: true
+ *     responses:
+ *       200:
+ *         description: Liste der Blog-Posts
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/BlogPost'
+ *       500:
+ *         description: Serverfehler
+ */
 app.get('/api/posts', (req, res) => {
   const { category, featured } = req.query;
   
@@ -92,6 +248,35 @@ app.get('/api/posts', (req, res) => {
   res.json(filteredPosts);
 });
 
+/**
+ * @swagger
+ * /api/posts/{id}:
+ *   get:
+ *     summary: Einzelnen Blog-Post nach ID abrufen
+ *     description: Lädt einen spezifischen Blog-Post anhand seiner ID
+ *     tags: [Blog Posts]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Eindeutige Post-ID
+ *         example: 1
+ *     responses:
+ *       200:
+ *         description: Blog-Post gefunden
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/BlogPost'
+ *       404:
+ *         description: Post nicht gefunden
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 app.get('/api/posts/:id', (req, res) => {
   const post = blogPosts.find(p => p.id === parseInt(req.params.id));
   if (!post) {
@@ -100,15 +285,123 @@ app.get('/api/posts/:id', (req, res) => {
   res.json(post);
 });
 
+/**
+ * @swagger
+ * /api/posts:
+ *   post:
+ *     summary: Neuen Blog-Post erstellen
+ *     description: Erstellt einen neuen Blog-Post mit den übermittelten Daten
+ *     tags: [Blog Posts]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [title, content, author, category]
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 description: Titel des neuen Posts
+ *                 example: "Mein neuer Blog-Post"
+ *               content:
+ *                 type: string
+ *                 description: Inhalt des Posts
+ *                 example: "Das ist der Inhalt meines Posts..."
+ *               author:
+ *                 type: string
+ *                 description: Autor des Posts
+ *                 example: "Mehmet Oezdag"
+ *               category:
+ *                 type: string
+ *                 description: Kategorie des Posts
+ *                 example: "Angular"
+ *               tags:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 description: Tags für den Post
+ *                 example: ["tutorial", "angular"]
+ *               featured:
+ *                 type: boolean
+ *                 description: Ob der Post als Featured markiert werden soll
+ *                 example: false
+ *     responses:
+ *       201:
+ *         description: Blog-Post erfolgreich erstellt
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/BlogPost'
+ *       400:
+ *         description: Ungültige Eingabedaten
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+app.post('/api/posts', (req, res) => {
+  const { title, content, author, category, tags, featured } = req.body;
+  
+  // Validierung der Pflichtfelder
+  if (!title || !content || !author || !category) {
+    return res.status(400).json({ 
+      error: 'Pflichtfelder fehlen: title, content, author, category sind erforderlich' 
+    });
+  }
+  
+  // Neue Post-ID generieren
+  const newId = Math.max(...blogPosts.map(p => p.id)) + 1;
+  
+  // Neuen Post erstellen
+  const newPost = {
+    id: newId,
+    title,
+    content,
+    author,
+    publishDate: new Date().toISOString().split('T')[0], // Aktuelles Datum
+    category,
+    tags: tags || [],
+    featured: featured || false,
+    imageUrl: `https://picsum.photos/400/250?random=${newId}`
+  };
+  
+  // Post zum Array hinzufügen
+  blogPosts.push(newPost);
+  
+  // Erstellten Post zurückgeben
+  res.status(201).json(newPost);
+});
+
+/**
+ * @swagger
+ * /api/categories:
+ *   get:
+ *     summary: Alle verfügbaren Kategorien abrufen
+ *     description: Lädt alle eindeutigen Kategorien der Blog-Posts
+ *     tags: [Categories]
+ *     responses:
+ *       200:
+ *         description: Liste der Kategorien
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: string
+ *               example: ["Angular", "CSS", "TypeScript"]
+ */
 app.get('/api/categories', (req, res) => {
   const categories = [...new Set(blogPosts.map(post => post.category))];
   res.json(categories);
 });
 
 app.listen(PORT, () => {
-  console.log(`Backend Server läuft auf http://localhost:${PORT}`);
-  console.log(`API verfügbar unter:`);
-  console.log(`  - GET /api/posts - Alle Blog-Posts`);
-  console.log(`  - GET /api/posts/:id - Einzelner Post`);
-  console.log(`  - GET /api/categories - Verfügbare Kategorien`);
+  console.log(`🚀 Backend Server läuft auf http://localhost:${PORT}`);
+  console.log(`📊 Swagger-UI verfügbar unter: http://localhost:${PORT}/api-docs`);
+  console.log(`📡 API verfügbar unter:`);
+  console.log(`   - GET /api/posts - Alle Blog-Posts`);
+  console.log(`   - GET /api/posts/:id - Einzelner Post`);
+  console.log(`   - GET /api/categories - Verfügbare Kategorien`);
+  console.log(`📝 API-Dokumentation: http://localhost:${PORT}/api-docs`);
 }); 
