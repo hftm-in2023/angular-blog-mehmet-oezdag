@@ -47,8 +47,8 @@
           
           <!-- Radio Buttons with NgModel -->
           <div class="radio-group">
-            <label>Geschlecht:</label>
-            <mat-radio-group [(ngModel)]="selectedGender" class="radio-group-horizontal">
+            <span>Geschlecht:</span>
+            <mat-radio-group [(ngModel)]="selectedGender" class="radio-group-horizontal" aria-label="Geschlecht auswählen">
               <mat-radio-button value="male">Männlich</mat-radio-button>
               <mat-radio-button value="female">Weiblich</mat-radio-button>
               <mat-radio-button value="other">Andere</mat-radio-button>
@@ -128,16 +128,16 @@
                   <h4>NgStyle Demo - Dynamische Styles:</h4>
                   
                   <div class="slider-container">
-                    <label>Hintergrund Opazität: {{ backgroundOpacity }}%</label>
+                    <label for="background-opacity-slider">Hintergrund Opazität: {{ backgroundOpacity }}%</label>
                     <mat-slider min="0" max="100" step="5">
-                      <input matSliderThumb [(ngModel)]="backgroundOpacity">
+                      <input matSliderThumb [(ngModel)]="backgroundOpacity" id="background-opacity-slider">
                     </mat-slider>
                   </div>
                   
                   <div class="slider-container">
-                    <label>Border Radius: {{ borderRadius }}px</label>
+                    <label for="border-radius-slider">Border Radius: {{ borderRadius }}px</label>
                     <mat-slider min="0" max="50" step="2">
-                      <input matSliderThumb [(ngModel)]="borderRadius">
+                      <input matSliderThumb [(ngModel)]="borderRadius" id="border-radius-slider">
                     </mat-slider>
                   </div>
                 </div>
@@ -159,8 +159,8 @@
         <mat-card-content>
           <!-- View Toggle for @switch -->
           <div class="view-toggle">
-            <label>Ansicht wählen:</label>
-            <mat-radio-group [(ngModel)]="currentView" class="radio-group-horizontal">
+            <span>Ansicht wählen:</span>
+            <mat-radio-group [(ngModel)]="currentView" class="radio-group-horizontal" aria-label="Ansicht wählen">
               <mat-radio-button value="list">Liste</mat-radio-button>
               <mat-radio-button value="grid">Grid</mat-radio-button>
               <mat-radio-button value="cards">Karten</mat-radio-button>
@@ -183,7 +183,12 @@
                 @for (task of tasks; track task.id; let i = $index) {
                   <div class="task-item" 
                        [ngClass]="getTaskClasses(task)"
-                       (click)="onTaskClick(task.title)">
+                       (click)="onTaskClick(task.title)"
+                       (keydown.enter)="onTaskClick(task.title)"
+                       (keydown.space)="onTaskClick(task.title)"
+                       tabindex="0"
+                       role="button"
+                       [attr.aria-label]="'Aufgabe ' + task.title + ' auswählen'">
                     <mat-icon>{{ task.completed ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
                     <span class="task-content">
                       {{ i + 1 }}. {{ task.title }} 
@@ -211,7 +216,12 @@
                   @for (task of tasks; track task.id; let isEven = $even) {
                                          <div class="task-grid-item" 
                           [ngClass]="getGridItemClasses(task, isEven)"
-                          (click)="onTaskClick(task.title)">
+                          (click)="onTaskClick(task.title)"
+                          (keydown.enter)="onTaskClick(task.title)"
+                          (keydown.space)="onTaskClick(task.title)"
+                          tabindex="0"
+                          role="button"
+                          [attr.aria-label]="'Aufgabe ' + task.title + ' auswählen'">
                       <mat-icon>{{ task.completed ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
                       <p>{{ task.title }}</p>
                       <mat-chip [color]="task.priority === 'high' ? 'warn' : 'primary'">{{ task.priority }}</mat-chip>

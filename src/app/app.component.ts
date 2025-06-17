@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
@@ -25,6 +25,7 @@ import { DemoComponent } from './demo/demo.component';
   selector: 'app-root',
   imports: [
     CommonModule,
+    NgOptimizedImage,
     FormsModule,
     MatToolbarModule,
     MatCardModule,
