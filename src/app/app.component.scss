@@ -1,0 +1,445 @@
+// ===== SCSS VARIABLES =====
+$primary-color: #1976d2;
+$accent-color: #ff4081;
+$warn-color: #f44336;
+$success-color: #4caf50;
+
+$background-light: #f5f5f5;
+$card-background: #ffffff;
+$text-primary: #212121;
+$text-secondary: #757575;
+
+$border-radius: 8px;
+$box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+$transition: all 0.3s ease;
+
+// Grid breakpoints
+$mobile: 768px;
+$tablet: 1024px;
+$desktop: 1200px;
+
+// ===== MIXINS =====
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@mixin card-style {
+  background: $card-background;
+  border-radius: $border-radius;
+  box-shadow: $box-shadow;
+  transition: $transition;
+  
+  &:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+  }
+}
+
+@mixin responsive-grid($min-width: 300px, $gap: 24px) {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax($min-width, 1fr));
+  gap: $gap;
+}
+
+// ===== BASE STYLES =====
+:host {
+  display: block;
+  min-height: 100vh;
+  background: $background-light;
+}
+
+// ===== HEADER =====
+.blog-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  @include flex-between;
+  
+  .title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-left: 12px;
+  }
+  
+  .header-spacer {
+    flex: 1;
+  }
+}
+
+// ===== MAIN CONTAINER =====
+.main-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px;
+  
+  @media (max-width: $mobile) {
+    padding: 16px;
+  }
+}
+
+// ===== DEMO SECTION =====
+.demo-section {
+  margin-bottom: 32px;
+  
+  .demo-card {
+    @include card-style;
+  }
+}
+
+// ===== BLOG SECTION =====
+.blog-section {
+  width: 100%;
+}
+
+// ===== FILTER CONTROLS =====
+.filter-controls {
+  margin-bottom: 32px;
+  
+  .filter-card {
+    @include card-style;
+    
+    .filter-row {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+      
+      @media (max-width: $mobile) {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+      }
+      
+      .category-select {
+        min-width: 200px;
+        
+        @media (max-width: $mobile) {
+          min-width: auto;
+          width: 100%;
+        }
+      }
+      
+      .featured-filter,
+      .reset-filter {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        
+        @media (max-width: $mobile) {
+          justify-content: center;
+        }
+      }
+    }
+  }
+}
+
+// ===== LOADING =====
+.loading-container {
+  @include flex-center;
+  flex-direction: column;
+  padding: 48px 24px;
+  gap: 16px;
+  
+  p {
+    color: $text-secondary;
+    margin: 0;
+  }
+}
+
+// ===== BLOG POSTS GRID =====
+.blog-posts-grid {
+  @include responsive-grid(350px, 24px);
+  
+  @media (max-width: $mobile) {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  @media (min-width: $tablet) and (max-width: $desktop) {
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  }
+  
+  @media (min-width: $desktop) {
+    grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+  }
+}
+
+// ===== BLOG POST CARD =====
+.blog-post-card {
+  @include card-style;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  
+  // Featured Post Styling
+  &.featured {
+    border: 2px solid $accent-color;
+    
+    .mat-mdc-card-header {
+      background: linear-gradient(135deg, rgba($accent-color, 0.1), rgba($primary-color, 0.1));
+    }
+  }
+  
+  // First/Last Post Special Styling
+  &.first-post {
+    .mat-mdc-card-title {
+      color: $primary-color;
+      font-weight: 700;
+    }
+  }
+  
+  &.last-post {
+    opacity: 0.95;
+  }
+  
+  // Even/Odd Post Styling
+  &.even-post {
+    .post-image-container {
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg, transparent 30%, rgba($primary-color, 0.05) 70%);
+      }
+    }
+  }
+  
+  // Featured Badge
+  .featured-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: $accent-color;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    z-index: 10;
+    
+    mat-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+    }
+  }
+  
+  // Post Image
+  .post-image-container {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    
+    .post-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: $transition;
+    }
+  }
+  
+  &:hover .post-image {
+    transform: scale(1.05);
+  }
+  
+  // Card Header
+  .mat-mdc-card-header {
+    padding: 16px 16px 8px;
+  }
+  
+  .mat-mdc-card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-bottom: 8px;
+  }
+  
+  .mat-mdc-card-subtitle {
+    color: $text-secondary;
+    font-size: 0.875rem;
+  }
+  
+  // Card Content
+  .mat-mdc-card-content {
+    padding: 0 16px 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .post-preview {
+    color: $text-primary;
+    line-height: 1.6;
+    margin-bottom: 16px;
+    flex: 1;
+  }
+  
+  .post-meta {
+    .mat-mdc-chip-set {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    
+    .mat-mdc-chip {
+      font-size: 0.75rem;
+      height: 28px;
+    }
+  }
+  
+  // Card Actions
+  .mat-mdc-card-actions {
+    padding: 8px 16px 16px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+  }
+}
+
+// ===== EMPTY STATE =====
+.empty-state {
+  grid-column: 1 / -1;
+  @include flex-center;
+  padding: 48px 24px;
+  
+  .empty-card {
+    @include card-style;
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+    
+    .empty-icon {
+      font-size: 64px;
+      width: 64px;
+      height: 64px;
+      color: $text-secondary;
+      margin-bottom: 16px;
+    }
+    
+    h2 {
+      color: $text-primary;
+      margin-bottom: 16px;
+    }
+    
+    p {
+      color: $text-secondary;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+  }
+}
+
+// ===== FOOTER =====
+.blog-footer {
+  margin-top: 48px;
+  padding: 24px 0;
+  background: $card-background;
+  
+  .footer-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 24px;
+    text-align: center;
+    
+    p {
+      color: $text-secondary;
+      margin: 8px 0;
+      font-size: 0.875rem;
+    }
+  }
+}
+
+// ===== ANIMATIONS =====
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.blog-post-card {
+  animation: fadeInUp 0.6s ease-out;
+  
+  @for $i from 1 through 12 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{$i * 0.1}s;
+    }
+  }
+}
+
+// ===== RESPONSIVE UTILITIES =====
+@media (max-width: $mobile) {
+  .blog-posts-grid {
+    padding: 0 8px;
+  }
+  
+  .blog-post-card {
+    .post-image-container {
+      height: 180px;
+    }
+    
+    .mat-mdc-card-title {
+      font-size: 1.125rem;
+    }
+  }
+}
+
+@media (min-width: $desktop) {
+  .main-container {
+    padding: 32px;
+  }
+  
+  .blog-posts-grid {
+    gap: 32px;
+  }
+}
+
+// ===== MATERIAL DESIGN OVERRIDES =====
+.mat-mdc-card {
+  border-radius: $border-radius !important;
+}
+
+.mat-mdc-button,
+.mat-mdc-raised-button,
+.mat-mdc-icon-button {
+  border-radius: $border-radius !important;
+}
+
+// ===== ACCESSIBILITY =====
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+  .blog-post-card {
+    border: 2px solid $text-primary;
+  }
+  
+  .featured-badge {
+    border: 2px solid white;
+  }
+}
