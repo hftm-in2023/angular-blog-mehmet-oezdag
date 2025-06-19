@@ -14,7 +14,7 @@
   &.dark-theme {
     background-color: #303030;
     color: white;
-    
+
     h1 {
       color: #90caf9;
     }
@@ -35,7 +35,7 @@
 // Card styling
 .demo-card {
   margin-bottom: 20px;
-  
+
   mat-card-content {
     padding-top: 16px;
   }
@@ -49,7 +49,7 @@
 
 .slider-container {
   margin: 20px 0;
-  
+
   label {
     display: block;
     margin-bottom: 8px;
@@ -59,7 +59,7 @@
 
 .radio-group {
   margin: 16px 0;
-  
+
   label {
     font-weight: 500;
     margin-bottom: 8px;
@@ -70,7 +70,7 @@
 .radio-group-horizontal {
   display: flex;
   gap: 16px;
-  
+
   mat-radio-button {
     margin-right: 16px;
   }
@@ -86,12 +86,12 @@
   padding: 16px;
   border: 2px solid #ddd;
   transition: all 0.3s ease;
-  
+
   h3 {
     margin-top: 0;
     color: #333;
   }
-  
+
   p {
     margin: 8px 0;
   }
@@ -103,7 +103,7 @@
   gap: 16px;
   margin-bottom: 20px;
   flex-wrap: wrap;
-  
+
   button {
     display: flex;
     align-items: center;
@@ -119,7 +119,7 @@
 .info-card {
   background-color: #e3f2fd;
   margin: 16px 0;
-  
+
   mat-card-content {
     display: flex;
     align-items: center;
@@ -131,7 +131,7 @@
 .advanced-options {
   margin-top: 20px;
   border: 2px dashed #2196f3;
-  
+
   .style-controls {
     h4 {
       color: #1976d2;
@@ -143,7 +143,7 @@
 // View toggle
 .view-toggle {
   margin-bottom: 20px;
-  
+
   label {
     display: block;
     margin-bottom: 8px;
@@ -161,46 +161,46 @@
   border: 1px solid #ddd;
   cursor: pointer;
   transition: all 0.3s ease;
-  
+
   &:hover {
     background-color: #f5f5f5;
     transform: translateX(4px);
   }
-  
+
   // NgClass demo styles
   &.task-completed {
     background-color: #e8f5e8;
     border-color: #4caf50;
     opacity: 0.8;
-    
+
     .task-content {
       text-decoration: line-through;
     }
   }
-  
+
   &.task-high-priority {
     border-left: 4px solid #f44336;
     background-color: #ffebee;
   }
-  
+
   &.task-medium-priority {
     border-left: 4px solid #ff9800;
     background-color: #fff3e0;
   }
-  
+
   &.task-low-priority {
     border-left: 4px solid #4caf50;
     background-color: #f3e5f5;
   }
-  
+
   mat-icon {
     margin-right: 12px;
-    
+
     &:first-child {
       color: #4caf50;
     }
   }
-  
+
   .task-content {
     flex: 1;
     display: flex;
@@ -224,45 +224,45 @@
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  
+
   &:hover {
     transform: scale(1.02);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
-  
+
   // NgClass demo for even/odd
   &.even-item {
     background-color: #f0f0f0;
   }
-  
+
   &.odd-item {
     background-color: #ffffff;
   }
-  
+
   // Priority styles (inherits from task-item)
   &.task-high-priority {
     border-color: #f44336;
     background-color: #ffebee !important;
   }
-  
+
   &.task-medium-priority {
     border-color: #ff9800;
     background-color: #fff3e0 !important;
   }
-  
+
   &.task-low-priority {
     border-color: #4caf50;
     background-color: #f3e5f5 !important;
   }
-  
+
   &.task-completed {
     opacity: 0.6;
-    
+
     p {
       text-decoration: line-through;
     }
   }
-  
+
   p {
     margin: 8px 0;
   }
@@ -279,34 +279,34 @@
 .task-card {
   cursor: pointer;
   transition: all 0.3s ease;
-  
+
   &:hover {
     transform: translateY(-4px);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   }
-  
+
   // NgClass demo for first/last
   &.first-card {
     border: 2px solid #2196f3;
   }
-  
+
   &.last-card {
     border: 2px solid #ff9800;
   }
-  
+
   // Priority styles
   &.task-high-priority {
     border-left: 4px solid #f44336;
   }
-  
+
   &.task-medium-priority {
     border-left: 4px solid #ff9800;
   }
-  
+
   &.task-low-priority {
     border-left: 4px solid #4caf50;
   }
-  
+
   &.task-completed {
     opacity: 0.7;
     background-color: #f5f5f5;
@@ -316,7 +316,7 @@
 // Color demo
 .color-demo {
   margin-top: 20px;
-  
+
   h4 {
     margin-bottom: 12px;
   }
@@ -326,15 +326,15 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  
+
   mat-chip {
     cursor: pointer;
     transition: all 0.3s ease;
-    
+
     &:hover {
       transform: scale(1.1);
     }
-    
+
     // NgClass demo for selected color
     &.selected-color {
       border: 3px solid #fff;
@@ -347,12 +347,12 @@
 .progress-card {
   margin-top: 30px;
   text-align: center;
-  
+
   h4 {
     margin-bottom: 16px;
     color: #1976d2;
   }
-  
+
   mat-progress-bar {
     margin: 16px 0;
   }
@@ -371,24 +371,24 @@
   .demo-container {
     padding: 10px;
   }
-  
+
   .button-section {
     flex-direction: column;
     align-items: stretch;
-    
+
     button {
       margin-bottom: 8px;
     }
   }
-  
+
   .task-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .card-container {
     grid-template-columns: 1fr;
   }
-  
+
   .radio-group-horizontal {
     flex-direction: column;
     gap: 8px;
