@@ -20,7 +20,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatInputModule } from '@angular/material/input';
 
 // Services
-import { BlogService, BlogPost } from './services/blog.service';
+import { BlogService, BlogPost } from './core/services/blog.service';
 import { DemoComponent } from './demo/demo.component';
 
 interface BlogData {

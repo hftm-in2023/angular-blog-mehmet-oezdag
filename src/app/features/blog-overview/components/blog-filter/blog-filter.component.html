@@ -1,0 +1,57 @@
+<div class="filter-controls">
+  <mat-card class="filter-card">
+    <mat-card-content>
+      <div class="filter-row">
+        <!-- Category Filter -->
+        <mat-form-field appearance="outline" class="category-select">
+          <mat-label>Kategorie auswählen</mat-label>
+          <mat-select
+            [value]="selectedCategory || ''"
+            (selectionChange)="onCategoryChange($event)"
+            [disabled]="isLoading"
+          >
+            <mat-option value="">Alle Kategorien</mat-option>
+            @for (category of categories; track category) {
+              <mat-option [value]="category">{{ category }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Featured Filter -->
+        <button
+          mat-raised-button
+          [color]="showOnlyFeatured ? 'accent' : 'primary'"
+          (click)="onToggleFeatured()"
+          [disabled]="isLoading"
+          class="featured-filter"
+        >
+          <mat-icon>{{ showOnlyFeatured ? 'star' : 'star_border' }}</mat-icon>
+          {{ showOnlyFeatured ? 'Alle anzeigen' : 'Nur Featured' }}
+        </button>
+
+        <!-- Reset Filter -->
+        <button
+          mat-raised-button
+          color="warn"
+          (click)="onResetFilters()"
+          [disabled]="isLoading"
+          class="reset-filter"
+        >
+          <mat-icon>refresh</mat-icon>
+          Filter zurücksetzen
+        </button>
+
+        <!-- Refresh Button -->
+        <button
+          mat-icon-button
+          (click)="onRefresh()"
+          [disabled]="isLoading"
+          class="refresh-button"
+          matTooltip="Aktualisieren"
+        >
+          <mat-icon>refresh</mat-icon>
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
