@@ -1,1 +1,8 @@
-npm test
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Run linting and formatting checks
+npx lint-staged
+
+# Run tests
+npm run test:headless
