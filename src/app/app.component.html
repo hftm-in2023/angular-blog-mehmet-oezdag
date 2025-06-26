@@ -218,8 +218,8 @@
               <!-- Category Filter -->
               <mat-form-field appearance="outline" class="category-select">
                 <mat-label>Kategorie auswählen</mat-label>
-                <mat-select 
-                  [value]="(selectedCategory$ | async) || ''" 
+                <mat-select
+                  [value]="(selectedCategory$ | async) || ''"
                   (selectionChange)="updateSelectedCategory($event.value)"
                 >
                   <mat-option value="">Alle Kategorien</mat-option>

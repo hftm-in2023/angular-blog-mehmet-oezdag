@@ -75,27 +75,25 @@ export class AppComponent implements OnInit {
   blogData$: Observable<BlogData> = combineLatest([
     this.selectedCategory$,
     this.showOnlyFeatured$,
-    this.refreshTriggerSubject
+    this.refreshTriggerSubject,
   ]).pipe(
     switchMap(([category, featured]) => {
       const postsRequest = this.getPostsRequest(category, featured);
-      const categoriesRequest = this.blogService.getCategories().pipe(
-        catchError(() => EMPTY)
-      );
+      const categoriesRequest = this.blogService.getCategories().pipe(catchError(() => EMPTY));
 
       return combineLatest([
         postsRequest.pipe(startWith([])),
-        categoriesRequest.pipe(startWith([]))
+        categoriesRequest.pipe(startWith([])),
       ]).pipe(
         map(([posts, categories]) => ({
           posts,
           categories,
-          isLoading: false
+          isLoading: false,
         })),
         startWith({ posts: [], categories: [], isLoading: true }),
-        catchError(() => [{ posts: [], categories: [], isLoading: false }])
+        catchError(() => [{ posts: [], categories: [], isLoading: false }]),
       );
-    })
+    }),
   );
 
   // UI State
@@ -208,27 +206,28 @@ export class AppComponent implements OnInit {
       featured: false,
     };
 
-    this.http.post<BlogPost>('http://localhost:3000/api/posts', postData).pipe(
-      finalize(() => this.isTestLoading = false)
-    ).subscribe({
-      next: (response) => {
-        this.testResult = {
-          success: true,
-          data: response,
-          rawResponse: JSON.stringify(response, null, 2),
-        };
+    this.http
+      .post<BlogPost>('http://localhost:3000/api/posts', postData)
+      .pipe(finalize(() => (this.isTestLoading = false)))
+      .subscribe({
+        next: (response) => {
+          this.testResult = {
+            success: true,
+            data: response,
+            rawResponse: JSON.stringify(response, null, 2),
+          };
 
-        // Trigger refresh to show the new post
-        this.refreshTriggerSubject.next();
-      },
-      error: (error) => {
-        this.testResult = {
-          success: false,
-          error: error.error?.error || error.message || 'Unbekannter Fehler',
-          rawResponse: JSON.stringify(error, null, 2),
-        };
-      },
-    });
+          // Trigger refresh to show the new post
+          this.refreshTriggerSubject.next();
+        },
+        error: (error) => {
+          this.testResult = {
+            success: false,
+            error: error.error?.error || error.message || 'Unbekannter Fehler',
+            rawResponse: JSON.stringify(error, null, 2),
+          };
+        },
+      });
   }
 
   /**
