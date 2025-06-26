@@ -1,0 +1,81 @@
+<article class="blog-detail-view">
+  <!-- Featured Badge -->
+  @if (post.featured) {
+    <div class="featured-badge">
+      <mat-icon>star</mat-icon>
+      Featured Post
+    </div>
+  }
+
+  <!-- Hero Image -->
+  <div class="hero-image-container">
+    <img [ngSrc]="post.imageUrl" [alt]="post.title" class="hero-image" width="800" height="300" />
+  </div>
+
+  <!-- Article Header -->
+  <header class="article-header">
+    <h1 class="article-title">{{ post.title }}</h1>
+
+    <div class="article-meta">
+      <div class="author-info">
+        <mat-icon>person</mat-icon>
+        <span>{{ post.author }}</span>
+      </div>
+
+      <div class="publish-date">
+        <mat-icon>calendar_today</mat-icon>
+        <span>{{ formatDate(post.publishDate) }}</span>
+      </div>
+
+      <div class="reading-time">
+        <mat-icon>schedule</mat-icon>
+        <span>{{ getReadingTime(post.content) }} Min. Lesezeit</span>
+      </div>
+
+      <div class="post-id">
+        <mat-icon>tag</mat-icon>
+        <span>ID: {{ post.id }}</span>
+      </div>
+    </div>
+
+    <div class="tags-container">
+      <mat-chip-set>
+        <mat-chip [color]="getCategoryColor(post.category)" class="category-chip">
+          {{ post.category }}
+        </mat-chip>
+        @for (tag of post.tags; track tag) {
+          <mat-chip class="tag-chip">{{ tag }}</mat-chip>
+        }
+      </mat-chip-set>
+    </div>
+  </header>
+
+  <mat-divider></mat-divider>
+
+  <!-- Article Content -->
+  <section class="article-content">
+    <div class="content-text">
+      {{ post.content }}
+    </div>
+  </section>
+
+  <mat-divider></mat-divider>
+
+  <!-- Article Footer -->
+  <footer class="article-footer">
+    <div class="footer-meta">
+      <p><strong>Kategorie:</strong> {{ post.category }}</p>
+      <p><strong>Veröffentlicht:</strong> {{ formatDate(post.publishDate) }}</p>
+      <p><strong>Autor:</strong> {{ post.author }}</p>
+    </div>
+
+    <div class="tags-footer">
+      <h4>Tags:</h4>
+      <div class="tag-list">
+        @for (tag of post.tags; track tag) {
+          <span class="tag-item">#{{ tag }}</span>
+        }
+      </div>
+    </div>
+  </footer>
+</article>

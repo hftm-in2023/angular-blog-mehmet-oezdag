@@ -1,0 +1,40 @@
+<div class="blog-detail-container">
+  @if (blogPost$ | async; as post) {
+    <!-- Back Navigation -->
+    <div class="navigation-bar">
+      <button mat-button (click)="onBackToBlog()" class="back-button">
+        <mat-icon>arrow_back</mat-icon>
+        Zurück zur Übersicht
+      </button>
+
+      <div class="action-buttons">
+        <button mat-icon-button (click)="onShare()" matTooltip="Teilen">
+          <mat-icon>share</mat-icon>
+        </button>
+        <button mat-icon-button (click)="onBookmark()" matTooltip="Bookmarken">
+          <mat-icon>bookmark_border</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- Blog Detail View -->
+    <app-blog-detail-view [post]="post"> </app-blog-detail-view>
+  } @else {
+    <!-- Loading or Error State -->
+    <div class="error-state">
+      <mat-card>
+        <mat-card-content>
+          <div class="error-content">
+            <mat-icon class="error-icon">error_outline</mat-icon>
+            <h2>Blog-Post nicht gefunden</h2>
+            <p>Der angeforderte Blog-Post konnte nicht geladen werden.</p>
+            <button mat-raised-button color="primary" (click)="onBackToBlog()">
+              <mat-icon>arrow_back</mat-icon>
+              Zurück zur Übersicht
+            </button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  }
+</div>

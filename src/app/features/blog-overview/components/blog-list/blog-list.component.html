@@ -1,0 +1,47 @@
+<!-- Loading Indicator -->
+@if (isLoading) {
+  <div class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Blog-Posts werden geladen...</p>
+  </div>
+}
+
+<!-- Blog Posts Grid -->
+@if (!isLoading) {
+  <div class="blog-posts-grid">
+    @for (
+      post of posts;
+      track trackByPost($index, post);
+      let i = $index;
+      let isFirst = $first;
+      let isLast = $last;
+      let isEven = $even
+    ) {
+      <app-blog-card
+        [post]="post"
+        [index]="i"
+        [isFirst]="isFirst"
+        [isLast]="isLast"
+        [isEven]="isEven"
+      >
+      </app-blog-card>
+    } @empty {
+      <!-- Empty State -->
+      <div class="empty-state">
+        <mat-card class="empty-card">
+          <mat-card-content>
+            <mat-icon class="empty-icon">inbox</mat-icon>
+            <h2>Keine Blog-Posts gefunden</h2>
+            <p>
+              @if (hasFilters) {
+                Versuchen Sie andere Filter oder setzen Sie die Filter zurück.
+              } @else {
+                Es sind derzeit keine Blog-Posts verfügbar.
+              }
+            </p>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    }
+  </div>
+}

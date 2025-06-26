@@ -3,7 +3,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { AppComponent } from './app.component';
-import { BlogService } from './services/blog.service';
+import { BlogService } from './core/services/blog.service';
 
 describe('AppComponent', () => {
   beforeEach(async () => {

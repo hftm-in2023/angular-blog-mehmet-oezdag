@@ -1,1 +1,8 @@
-npm test
+# Run linting and formatting checks
+npx lint-staged
+
+# Run linting check
+npm run lint
+
+# Run tests
+CHROME_BIN=/usr/bin/chromium npm run test:headless

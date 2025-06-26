@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { Observable, BehaviorSubject, combineLatest, EMPTY } from 'rxjs';
+import { map, switchMap, startWith, catchError, finalize } from 'rxjs/operators';
 
 // Angular Material Imports
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -18,8 +20,21 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatInputModule } from '@angular/material/input';
 
 // Services
-import { BlogService, BlogPost } from './services/blog.service';
+import { BlogService, BlogPost } from './core/services/blog.service';
 import { DemoComponent } from './demo/demo.component';
+
+interface BlogData {
+  posts: BlogPost[];
+  categories: string[];
+  isLoading: boolean;
+}
+
+interface TestResult {
+  success: boolean;
+  data?: BlogPost;
+  error?: string;
+  rawResponse?: string;
+}
 
 @Component({
   selector: 'app-root',
@@ -47,18 +62,43 @@ import { DemoComponent } from './demo/demo.component';
 export class AppComponent implements OnInit {
   title = 'Angular Blog - Mehmet Oezdag';
 
-  // Blog-Daten
-  blogPosts: BlogPost[] = [];
-  categories: string[] = [];
-  selectedCategory = '';
-  isLoading = false;
-  showDemo = false;
+  // Reactive state subjects
+  private selectedCategorySubject = new BehaviorSubject<string>('');
+  private showOnlyFeaturedSubject = new BehaviorSubject<boolean>(false);
+  private refreshTriggerSubject = new BehaviorSubject<void>(undefined);
 
-  // Filter-Optionen
-  showOnlyFeatured = false;
+  // Reactive streams
+  selectedCategory$ = this.selectedCategorySubject.asObservable();
+  showOnlyFeatured$ = this.showOnlyFeaturedSubject.asObservable();
+
+  // Combined blog data stream
+  blogData$: Observable<BlogData> = combineLatest([
+    this.selectedCategory$,
+    this.showOnlyFeatured$,
+    this.refreshTriggerSubject,
+  ]).pipe(
+    switchMap(([category, featured]) => {
+      const postsRequest = this.getPostsRequest(category, featured);
+      const categoriesRequest = this.blogService.getCategories().pipe(catchError(() => EMPTY));
+
+      return combineLatest([
+        postsRequest.pipe(startWith([])),
+        categoriesRequest.pipe(startWith([])),
+      ]).pipe(
+        map(([posts, categories]) => ({
+          posts,
+          categories,
+          isLoading: false,
+        })),
+        startWith({ posts: [], categories: [], isLoading: true }),
+        catchError(() => [{ posts: [], categories: [], isLoading: false }]),
+      );
+    }),
+  );
 
   // UI State
   isDarkMode = false;
+  showDemo = false;
   showSwaggerHelp = false;
 
   // Live Test State
@@ -69,12 +109,7 @@ export class AppComponent implements OnInit {
     author: '',
     category: 'Test',
   };
-  testResult: {
-    success: boolean;
-    data?: BlogPost;
-    error?: string;
-    rawResponse?: string;
-  } | null = null;
+  testResult: TestResult | null = null;
 
   // Swagger-UI Help Content
   swaggerExampleJson = `{
@@ -92,8 +127,20 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadBlogData();
     this.loadDarkModePreference();
+  }
+
+  /**
+   * Gets the appropriate posts request based on filters
+   */
+  private getPostsRequest(category: string, featured: boolean): Observable<BlogPost[]> {
+    if (featured) {
+      return this.blogService.getFeaturedPosts();
+    } else if (category) {
+      return this.blogService.getPostsByCategory(category);
+    } else {
+      return this.blogService.getPosts();
+    }
   }
 
   /**
@@ -159,27 +206,28 @@ export class AppComponent implements OnInit {
       featured: false,
     };
 
-    this.http.post<BlogPost>('http://localhost:3000/api/posts', postData).subscribe({
-      next: (response) => {
-        this.testResult = {
-          success: true,
-          data: response,
-          rawResponse: JSON.stringify(response, null, 2),
-        };
-        this.isTestLoading = false;
+    this.http
+      .post<BlogPost>('http://localhost:3000/api/posts', postData)
+      .pipe(finalize(() => (this.isTestLoading = false)))
+      .subscribe({
+        next: (response) => {
+          this.testResult = {
+            success: true,
+            data: response,
+            rawResponse: JSON.stringify(response, null, 2),
+          };
 
-        // Refresh blog posts to show the new post
-        this.loadBlogData();
-      },
-      error: (error) => {
-        this.testResult = {
-          success: false,
-          error: error.error?.error || error.message || 'Unbekannter Fehler',
-          rawResponse: JSON.stringify(error, null, 2),
-        };
-        this.isTestLoading = false;
-      },
-    });
+          // Trigger refresh to show the new post
+          this.refreshTriggerSubject.next();
+        },
+        error: (error) => {
+          this.testResult = {
+            success: false,
+            error: error.error?.error || error.message || 'Unbekannter Fehler',
+            rawResponse: JSON.stringify(error, null, 2),
+          };
+        },
+      });
   }
 
   /**
@@ -196,97 +244,33 @@ export class AppComponent implements OnInit {
   }
 
   /**
-   * Lädt alle Blog-Daten vom Backend
-   */
-  loadBlogData(): void {
-    this.isLoading = true;
-
-    // Lade Posts und Kategorien parallel
-    this.blogService.getPosts().subscribe({
-      next: (posts) => {
-        this.blogPosts = posts;
-        this.isLoading = false;
-      },
-      error: (error) => {
-        console.error('Fehler beim Laden der Blog-Posts:', error);
-        this.isLoading = false;
-      },
-    });
-
-    this.blogService.getCategories().subscribe({
-      next: (categories) => {
-        this.categories = categories;
-      },
-      error: (error) => {
-        console.error('Fehler beim Laden der Kategorien:', error);
-      },
-    });
-  }
-
-  /**
    * Filtert Posts nach Kategorie
    */
   onCategoryChange(): void {
-    this.isLoading = true;
+    // The observable stream will automatically handle this
+  }
 
-    const request = this.selectedCategory
-      ? this.blogService.getPostsByCategory(this.selectedCategory)
-      : this.blogService.getPosts();
-
-    request.subscribe({
-      next: (posts) => {
-        this.blogPosts = posts;
-        this.isLoading = false;
-      },
-      error: (error) => {
-        console.error('Fehler beim Filtern der Posts:', error);
-        this.isLoading = false;
-      },
-    });
+  /**
+   * Updates the selected category
+   */
+  updateSelectedCategory(category: string): void {
+    this.selectedCategorySubject.next(category);
   }
 
   /**
    * Toggled Featured Posts Filter
    */
   toggleFeaturedFilter(): void {
-    this.showOnlyFeatured = !this.showOnlyFeatured;
-    this.filterPosts();
-  }
-
-  /**
-   * Filtert Posts basierend auf aktuellen Einstellungen
-   */
-  private filterPosts(): void {
-    this.isLoading = true;
-
-    let request;
-    if (this.showOnlyFeatured) {
-      request = this.blogService.getFeaturedPosts();
-    } else if (this.selectedCategory) {
-      request = this.blogService.getPostsByCategory(this.selectedCategory);
-    } else {
-      request = this.blogService.getPosts();
-    }
-
-    request.subscribe({
-      next: (posts) => {
-        this.blogPosts = posts;
-        this.isLoading = false;
-      },
-      error: (error) => {
-        console.error('Fehler beim Filtern der Posts:', error);
-        this.isLoading = false;
-      },
-    });
+    const currentValue = this.showOnlyFeaturedSubject.value;
+    this.showOnlyFeaturedSubject.next(!currentValue);
   }
 
   /**
    * Setzt alle Filter zurück
    */
   resetFilters(): void {
-    this.selectedCategory = '';
-    this.showOnlyFeatured = false;
-    this.loadBlogData();
+    this.selectedCategorySubject.next('');
+    this.showOnlyFeaturedSubject.next(false);
   }
 
   /**
