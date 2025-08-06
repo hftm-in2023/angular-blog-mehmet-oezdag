@@ -5,14 +5,8 @@ import { map, catchError } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import {
   BlogPost,
-  BlogPostArray,
-  CategoriesArray,
-  validateBlogPost,
-  validateBlogPosts,
   safeParseBlogPost,
   safeParseBlogPosts,
-  BlogPostValidator,
-  BlogPostArrayValidator,
   CategoriesArrayValidator,
 } from '../schemas/blog.schemas';
 

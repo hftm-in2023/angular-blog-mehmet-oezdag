@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { of, throwError } from 'rxjs';
+import { of } from 'rxjs';
 
 import { BlogDetailContainerComponent } from './blog-detail-container.component';
 import { BlogService } from '../../../../core/services/blog.service';
@@ -12,7 +12,7 @@ describe('BlogDetailContainerComponent (Smart Component)', () => {
   let fixture: ComponentFixture<BlogDetailContainerComponent>;
   let blogService: jasmine.SpyObj<BlogService>;
   let router: jasmine.SpyObj<Router>;
-  let activatedRoute: any;
+  let activatedRoute: jasmine.SpyObj<ActivatedRoute>;
 
   const mockBlogPost: BlogPost = {
     id: 1,

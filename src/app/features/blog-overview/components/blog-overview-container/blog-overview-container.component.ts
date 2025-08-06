@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, BehaviorSubject, combineLatest, EMPTY, of } from 'rxjs';
+import { Observable, BehaviorSubject, combineLatest, of } from 'rxjs';
 import { map, switchMap, startWith, catchError } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
