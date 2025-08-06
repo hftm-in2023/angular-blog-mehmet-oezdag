@@ -7,6 +7,7 @@
   overflow: hidden;
   transition: all 0.3s ease;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  opacity: 1; // Ensure cards are visible immediately
 
   &:hover {
     transform: translateY(-4px);
@@ -115,24 +116,24 @@
     }
   }
 
-  // Animation variants for different positions
+  // Subtle animation variants for different positions
   &.first-post {
-    animation: slideInLeft 0.6s ease-out;
+    animation: slideInLeft 0.3s ease-out;
   }
 
   &.even-post {
-    animation: slideInRight 0.6s ease-out;
+    animation: slideInRight 0.3s ease-out;
   }
 
   &:not(.first-post):not(.even-post) {
-    animation: slideInUp 0.6s ease-out;
+    animation: slideInUp 0.3s ease-out;
   }
 }
 
 @keyframes slideInLeft {
   from {
-    opacity: 0;
-    transform: translateX(-30px);
+    opacity: 0.7;
+    transform: translateX(-10px);
   }
   to {
     opacity: 1;
@@ -142,8 +143,8 @@
 
 @keyframes slideInRight {
   from {
-    opacity: 0;
-    transform: translateX(30px);
+    opacity: 0.7;
+    transform: translateX(10px);
   }
   to {
     opacity: 1;
@@ -153,8 +154,8 @@
 
 @keyframes slideInUp {
   from {
-    opacity: 0;
-    transform: translateY(30px);
+    opacity: 0.7;
+    transform: translateY(10px);
   }
   to {
     opacity: 1;

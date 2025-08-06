@@ -1,10 +1,16 @@
 import { Component, Input } from '@angular/core';
-import { BlogPost } from '../../../../core/services/blog.service';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDividerModule } from '@angular/material/divider';
+import { BlogPost } from '../../../../core/schemas/blog.schemas';
 
 @Component({
   selector: 'app-blog-detail-view',
   templateUrl: './blog-detail-view.component.html',
   styleUrls: ['./blog-detail-view.component.scss'],
+  standalone: true,
+  imports: [CommonModule, NgOptimizedImage, MatIconModule, MatChipsModule, MatDividerModule],
 })
 export class BlogDetailViewComponent {
   @Input() post!: BlogPost;

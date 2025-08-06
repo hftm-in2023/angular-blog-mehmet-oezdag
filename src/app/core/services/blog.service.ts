@@ -1,19 +1,20 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-
-export interface BlogPost {
-  id: number;
-  title: string;
-  content: string;
-  author: string;
-  publishDate: string;
-  category: string;
-  tags: string[];
-  featured: boolean;
-  imageUrl: string;
-}
+import {
+  BlogPost,
+  BlogPostArray,
+  CategoriesArray,
+  validateBlogPost,
+  validateBlogPosts,
+  safeParseBlogPost,
+  safeParseBlogPosts,
+  BlogPostValidator,
+  BlogPostArrayValidator,
+  CategoriesArrayValidator,
+} from '../schemas/blog.schemas';
 
 @Injectable({
   providedIn: 'root',
@@ -89,6 +90,7 @@ export class BlogService {
 
   /**
    * Lädt alle Blog-Posts oder filtert nach Kategorie/Featured Status
+   * Includes ZOD validation for data integrity
    */
   getPosts(category?: string, featured?: boolean): Observable<BlogPost[]> {
     if (environment.mockData) {
@@ -105,31 +107,89 @@ export class BlogService {
       params = params.set('featured', featured.toString());
     }
 
-    return this.http.get<BlogPost[]>(`${this.apiUrl}/posts`, { params });
+    return this.http.get<unknown>(`${this.apiUrl}/posts`, { params }).pipe(
+      map((response) => {
+        const validationResult = safeParseBlogPosts(response);
+        if (!validationResult.success) {
+          console.error('Blog posts validation failed:', validationResult.error);
+          throw new Error(`Invalid blog posts data: ${validationResult.error.message}`);
+        }
+        return validationResult.data;
+      }),
+      catchError((error) => {
+        console.error('Error fetching blog posts:', error);
+        return throwError(() => new Error(`Failed to fetch blog posts: ${error.message}`));
+      }),
+    );
   }
 
   /**
    * Lädt einen einzelnen Blog-Post nach ID
+   * Includes ZOD validation for data integrity
    */
   getPost(id: number): Observable<BlogPost> {
     if (environment.mockData) {
       const post = this.mockPosts.find((p) => p.id === id);
-      return of(post || this.mockPosts[0]);
+      if (!post) {
+        return throwError(() => new Error(`Blog post with ID ${id} not found`));
+      }
+      // Validate mock data as well
+      const validationResult = safeParseBlogPost(post);
+      if (!validationResult.success) {
+        console.error('Mock blog post validation failed:', validationResult.error);
+        return throwError(
+          () => new Error(`Invalid mock blog post data: ${validationResult.error.message}`),
+        );
+      }
+      return of(validationResult.data);
     }
 
-    return this.http.get<BlogPost>(`${this.apiUrl}/posts/${id}`);
+    return this.http.get<unknown>(`${this.apiUrl}/posts/${id}`).pipe(
+      map((response) => {
+        const validationResult = safeParseBlogPost(response);
+        if (!validationResult.success) {
+          console.error('Blog post validation failed:', validationResult.error);
+          throw new Error(`Invalid blog post data: ${validationResult.error.message}`);
+        }
+        return validationResult.data;
+      }),
+      catchError((error) => {
+        console.error('Error fetching blog post:', error);
+        return throwError(() => new Error(`Failed to fetch blog post: ${error.message}`));
+      }),
+    );
   }
 
   /**
    * Lädt alle verfügbaren Kategorien
+   * Includes ZOD validation for data integrity
    */
   getCategories(): Observable<string[]> {
     if (environment.mockData) {
       const categories = [...new Set(this.mockPosts.map((post) => post.category))];
-      return of(categories);
+      // Validate categories array
+      try {
+        return of(CategoriesArrayValidator.parse(categories));
+      } catch (error) {
+        console.error('Mock categories validation failed:', error);
+        return throwError(() => new Error(`Invalid mock categories data: ${error}`));
+      }
     }
 
-    return this.http.get<string[]>(`${this.apiUrl}/categories`);
+    return this.http.get<unknown>(`${this.apiUrl}/categories`).pipe(
+      map((response) => {
+        try {
+          return CategoriesArrayValidator.parse(response);
+        } catch (error) {
+          console.error('Categories validation failed:', error);
+          throw new Error(`Invalid categories data: ${error}`);
+        }
+      }),
+      catchError((error) => {
+        console.error('Error fetching categories:', error);
+        return throwError(() => new Error(`Failed to fetch categories: ${error.message}`));
+      }),
+    );
   }
 
   /**

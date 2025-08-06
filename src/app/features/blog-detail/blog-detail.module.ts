@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 
 // Angular Material Imports
 import { MatCardModule } from '@angular/material/card';
@@ -15,10 +15,14 @@ import { BlogDetailContainerComponent } from './components/blog-detail-container
 import { BlogDetailViewComponent } from './components/blog-detail-view/blog-detail-view.component';
 
 @NgModule({
-  declarations: [BlogDetailContainerComponent, BlogDetailViewComponent],
   imports: [
     CommonModule,
+    NgOptimizedImage,
     BlogDetailRoutingModule,
+
+    // Components (if they are standalone)
+    BlogDetailContainerComponent,
+    BlogDetailViewComponent,
 
     // Angular Material
     MatCardModule,

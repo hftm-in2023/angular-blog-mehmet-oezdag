@@ -21,16 +21,16 @@ import { BlogCardComponent } from './components/blog-card/blog-card.component';
 import { BlogFilterComponent } from './components/blog-filter/blog-filter.component';
 
 @NgModule({
-  declarations: [
-    BlogOverviewContainerComponent,
-    BlogListComponent,
-    BlogCardComponent,
-    BlogFilterComponent,
-  ],
   imports: [
     CommonModule,
     FormsModule,
     BlogOverviewRoutingModule,
+
+    // Components (if they are standalone)
+    BlogOverviewContainerComponent,
+    BlogListComponent,
+    BlogCardComponent,
+    BlogFilterComponent,
 
     // Angular Material
     MatToolbarModule,

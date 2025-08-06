@@ -1,11 +1,25 @@
 import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
-import { BlogPost } from '../../../../core/services/blog.service';
+import { NgOptimizedImage, CommonModule } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatChipsModule } from '@angular/material/chips';
+import { BlogPost } from '../../../../core/schemas/blog.schemas';
 
 @Component({
   selector: 'app-blog-card',
   templateUrl: './blog-card.component.html',
   styleUrls: ['./blog-card.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    NgOptimizedImage,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatChipsModule,
+  ],
 })
 export class BlogCardComponent {
   @Input() post!: BlogPost;
@@ -20,7 +34,7 @@ export class BlogCardComponent {
    * Navigate to blog detail page
    */
   onReadMore(): void {
-    this.router.navigate(['/blog', this.post.id]);
+    this.router.navigate(['/blog-detail', this.post.id]);
   }
 
   /**
