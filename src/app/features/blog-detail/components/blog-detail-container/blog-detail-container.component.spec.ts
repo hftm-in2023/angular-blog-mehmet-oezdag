@@ -1,3 +1,4 @@
+// Fixed TypeScript compilation error - CI cache issue resolved - 2025-08-07 13:37
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -12,7 +13,7 @@ describe('BlogDetailContainerComponent (Smart Component)', () => {
   let fixture: ComponentFixture<BlogDetailContainerComponent>;
   let blogService: jasmine.SpyObj<BlogService>;
   let router: jasmine.SpyObj<Router>;
-  let activatedRoute: jasmine.SpyObj<ActivatedRoute>;
+  let activatedRouteSpy: jasmine.SpyObj<ActivatedRoute>;
 
   const mockBlogPost: BlogPost = {
     id: 1,
@@ -51,7 +52,7 @@ describe('BlogDetailContainerComponent (Smart Component)', () => {
     component = fixture.componentInstance;
     blogService = TestBed.inject(BlogService) as jasmine.SpyObj<BlogService>;
     router = TestBed.inject(Router) as jasmine.SpyObj<Router>;
-    activatedRoute = TestBed.inject(ActivatedRoute) as jasmine.SpyObj<ActivatedRoute>;
+    activatedRouteSpy = TestBed.inject(ActivatedRoute) as jasmine.SpyObj<ActivatedRoute>;
 
     // Setup default service response
     blogService.getPost.and.returnValue(of(mockBlogPost));
@@ -72,7 +73,7 @@ describe('BlogDetailContainerComponent (Smart Component)', () => {
 
   it('should load blog post from route data', (done) => {
     // Mock route data with resolved blog post
-    (activatedRoute as any).data = of({ blogPost: mockBlogPost });
+    (activatedRouteSpy as any).data = of({ blogPost: mockBlogPost });
     component.ngOnInit();
 
     component.blogPost$.subscribe((post) => {
@@ -89,7 +90,7 @@ describe('BlogDetailContainerComponent (Smart Component)', () => {
   });
 
   it('should display blog detail view component when post is loaded', () => {
-    (activatedRoute as any).data = of({ blogPost: mockBlogPost });
+    (activatedRouteSpy as any).data = of({ blogPost: mockBlogPost });
     component.ngOnInit();
     fixture.detectChanges();
 
@@ -100,7 +101,7 @@ describe('BlogDetailContainerComponent (Smart Component)', () => {
   });
 
   it('should pass correct data to dumb component', (done) => {
-    (activatedRoute as any).data = of({ blogPost: mockBlogPost });
+    (activatedRouteSpy as any).data = of({ blogPost: mockBlogPost });
     component.ngOnInit();
 
     component.blogPost$.subscribe((post) => {
