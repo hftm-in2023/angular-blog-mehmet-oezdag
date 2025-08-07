@@ -12,7 +12,7 @@ describe('BlogDetailContainerComponent (Smart Component)', () => {
   let fixture: ComponentFixture<BlogDetailContainerComponent>;
   let blogService: jasmine.SpyObj<BlogService>;
   let router: jasmine.SpyObj<Router>;
-  let activatedRoute: jasmine.SpyObj<ActivatedRoute>;
+  let activatedRoute: any;
 
   const mockBlogPost: BlogPost = {
     id: 1,
