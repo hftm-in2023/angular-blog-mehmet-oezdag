@@ -50,7 +50,7 @@ describe('BlogDetailContainerComponent (Smart Component)', () => {
     component = fixture.componentInstance;
     blogService = TestBed.inject(BlogService) as jasmine.SpyObj<BlogService>;
     router = TestBed.inject(Router) as jasmine.SpyObj<Router>;
-    activatedRoute = TestBed.inject(ActivatedRoute);
+    activatedRoute = TestBed.inject(ActivatedRoute) as jasmine.SpyObj<ActivatedRoute>;
 
     // Setup default service response
     blogService.getPost.and.returnValue(of(mockBlogPost));
