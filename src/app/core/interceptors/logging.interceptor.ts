@@ -81,7 +81,7 @@ export class LoggingInterceptor implements HttpInterceptor {
       finalize(() => {
         // Log completion regardless of success/failure
         const duration = performance.now() - startTime;
-        console.log(`${this.LOG_PREFIX} Request completed`, {
+        console.warn(`${this.LOG_PREFIX} Request completed`, {
           correlationId,
           duration: `${duration.toFixed(2)}ms`,
         });
@@ -103,7 +103,7 @@ export class LoggingInterceptor implements HttpInterceptor {
    */
   private logRequest(logEntry: LogEntry): void {
     console.group(`${this.LOG_PREFIX} ${logEntry.method} ${logEntry.url}`);
-    console.log('📤 Request Details:', {
+    console.warn('📤 Request Details:', {
       correlationId: logEntry.correlationId,
       method: logEntry.method,
       url: logEntry.url,
@@ -118,13 +118,13 @@ export class LoggingInterceptor implements HttpInterceptor {
   private logResponse(logEntry: LogEntry): void {
     const statusColor = this.getStatusColor(logEntry.status || 0);
     console.group(`${this.LOG_PREFIX} ✅ ${logEntry.method} ${logEntry.url}`);
-    console.log('📥 Response Details:', {
+    console.warn('📥 Response Details:', {
       correlationId: logEntry.correlationId,
       status: logEntry.status,
       duration: `${logEntry.duration?.toFixed(2)}ms`,
       timestamp: new Date().toISOString(),
     });
-    console.log(
+    console.warn(
       `%c${logEntry.status} ${this.getStatusText(logEntry.status || 0)}`,
       `color: ${statusColor}; font-weight: bold`,
     );

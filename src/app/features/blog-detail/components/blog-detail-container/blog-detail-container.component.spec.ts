@@ -36,7 +36,7 @@ describe('BlogDetailContainerComponent (Smart Component)', () => {
     const activatedRouteSpy = jasmine.createSpyObj('ActivatedRoute', ['toString'], {
       params: of({ id: '1' }),
       snapshot: { params: { id: '1' } },
-      data: of({ blogPost: mockBlogPost })
+      data: of({ blogPost: mockBlogPost }),
     });
 
     await TestBed.configureTestingModule({
