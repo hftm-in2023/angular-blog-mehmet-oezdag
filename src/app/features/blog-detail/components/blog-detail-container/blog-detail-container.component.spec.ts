@@ -13,7 +13,7 @@ describe('BlogDetailContainerComponent (Smart Component)', () => {
   let fixture: ComponentFixture<BlogDetailContainerComponent>;
   let blogService: jasmine.SpyObj<BlogService>;
   let router: jasmine.SpyObj<Router>;
-  let activatedRouteSpy: jasmine.SpyObj<ActivatedRoute>;
+  let activatedRouteSpy: any;
 
   const mockBlogPost: BlogPost = {
     id: 1,
@@ -33,7 +33,7 @@ describe('BlogDetailContainerComponent (Smart Component)', () => {
     const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
     // Create a proper spy object for ActivatedRoute
-    const activatedRouteSpy = jasmine.createSpyObj('ActivatedRoute', ['toString'], {
+    activatedRouteSpy = jasmine.createSpyObj('ActivatedRoute', ['toString'], {
       params: of({ id: '1' }),
       snapshot: { params: { id: '1' } },
       data: of({ blogPost: mockBlogPost }),
@@ -52,7 +52,6 @@ describe('BlogDetailContainerComponent (Smart Component)', () => {
     component = fixture.componentInstance;
     blogService = TestBed.inject(BlogService) as jasmine.SpyObj<BlogService>;
     router = TestBed.inject(Router) as jasmine.SpyObj<Router>;
-    activatedRouteSpy = TestBed.inject(ActivatedRoute) as jasmine.SpyObj<ActivatedRoute>;
 
     // Setup default service response
     blogService.getPost.and.returnValue(of(mockBlogPost));
