@@ -4,6 +4,10 @@
  * This file demonstrates that all Sprint 2a requirements have been implemented
  */
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable no-console */
+
 // 1. ✅ ZOD Validation with exported types and schemas
 import {
   BlogPostSchema,
@@ -191,7 +195,7 @@ export const demonstrateIntegration = () => {
   };
 
   // 2. Validation works
-  const validation = validateBlogPost(blogPost);
+  validateBlogPost(blogPost);
   console.log('✅ Type validation successful');
 
   // 3. Components are properly typed

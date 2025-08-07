@@ -142,8 +142,8 @@ describe('BlogListComponent (Dumb Component)', () => {
     expect(blogCards.length).toBe(mockBlogPosts.length);
 
     // Check that each card component is present
-    for (let i = 0; i < blogCards.length; i++) {
-      expect(blogCards[i]).toBeTruthy();
+    for (const card of blogCards) {
+      expect(card).toBeTruthy();
     }
   });
 
@@ -187,10 +187,6 @@ describe('BlogListComponent (Dumb Component)', () => {
 
   it('should be a pure display component without side effects', () => {
     // Should only respond to input changes
-    const initialPosts = component.posts;
-    const initialLoading = component.isLoading;
-    const initialHasFilters = component.hasFilters;
-
     // Setting inputs should not trigger side effects
     component.posts = mockBlogPosts;
     component.isLoading = true;
