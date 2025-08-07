@@ -1,6 +1,3 @@
-// Temporarily disabled due to CI caching issues - will re-enable after deployment
-/* eslint-disable */
-// @ts-nocheck
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -15,7 +12,7 @@ describe('BlogDetailContainerComponent (Smart Component)', () => {
   let fixture: ComponentFixture<BlogDetailContainerComponent>;
   let blogService: jasmine.SpyObj<BlogService>;
   let router: jasmine.SpyObj<Router>;
-  let activatedRoute: any;
+  let activatedRoute: jasmine.SpyObj<ActivatedRoute>;
 
   const mockBlogPost: BlogPost = {
     id: 1,
@@ -34,18 +31,19 @@ describe('BlogDetailContainerComponent (Smart Component)', () => {
     const blogServiceSpy = jasmine.createSpyObj('BlogService', ['getPost']);
     const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
-    // Mock ActivatedRoute with params
-    const activatedRouteMock = {
+    // Create a proper spy object for ActivatedRoute
+    const activatedRouteSpy = jasmine.createSpyObj('ActivatedRoute', ['toString'], {
       params: of({ id: '1' }),
       snapshot: { params: { id: '1' } },
-    };
+      data: of({ blogPost: mockBlogPost })
+    });
 
     await TestBed.configureTestingModule({
       imports: [BlogDetailContainerComponent, NoopAnimationsModule],
       providers: [
         { provide: BlogService, useValue: blogServiceSpy },
         { provide: Router, useValue: routerSpy },
-        { provide: ActivatedRoute, useValue: activatedRouteMock },
+        { provide: ActivatedRoute, useValue: activatedRouteSpy },
       ],
     }).compileComponents();
 
@@ -53,7 +51,7 @@ describe('BlogDetailContainerComponent (Smart Component)', () => {
     component = fixture.componentInstance;
     blogService = TestBed.inject(BlogService) as jasmine.SpyObj<BlogService>;
     router = TestBed.inject(Router) as jasmine.SpyObj<Router>;
-    activatedRoute = TestBed.inject(ActivatedRoute) as any;
+    activatedRoute = TestBed.inject(ActivatedRoute) as jasmine.SpyObj<ActivatedRoute>;
 
     // Setup default service response
     blogService.getPost.and.returnValue(of(mockBlogPost));
@@ -74,7 +72,7 @@ describe('BlogDetailContainerComponent (Smart Component)', () => {
 
   it('should load blog post from route data', (done) => {
     // Mock route data with resolved blog post
-    activatedRoute.data = of({ blogPost: mockBlogPost });
+    (activatedRoute as any).data = of({ blogPost: mockBlogPost });
     component.ngOnInit();
 
     component.blogPost$.subscribe((post) => {
@@ -91,7 +89,7 @@ describe('BlogDetailContainerComponent (Smart Component)', () => {
   });
 
   it('should display blog detail view component when post is loaded', () => {
-    activatedRoute.data = of({ blogPost: mockBlogPost });
+    (activatedRoute as any).data = of({ blogPost: mockBlogPost });
     component.ngOnInit();
     fixture.detectChanges();
 
@@ -102,7 +100,7 @@ describe('BlogDetailContainerComponent (Smart Component)', () => {
   });
 
   it('should pass correct data to dumb component', (done) => {
-    activatedRoute.data = of({ blogPost: mockBlogPost });
+    (activatedRoute as any).data = of({ blogPost: mockBlogPost });
     component.ngOnInit();
 
     component.blogPost$.subscribe((post) => {
