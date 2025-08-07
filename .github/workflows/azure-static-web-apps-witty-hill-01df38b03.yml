@@ -19,6 +19,8 @@ jobs:
         with:
           submodules: true
           lfs: false
+          fetch-depth: 0
+          clean: true
           
       - name: Setup Node.js
         uses: actions/setup-node@v4
