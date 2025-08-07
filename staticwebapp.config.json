@@ -1,7 +1,11 @@
 {
   "navigationFallback": {
     "rewrite": "/index.html",
-    "exclude": ["/images/*.{png,jpg,gif}", "/css/*"]
+    "exclude": [
+      "/*.{png,jpg,gif,ico}",
+      "/*.{js,css,map}",
+      "/assets/*"
+    ]
   },
   "responseOverrides": {
     "404": {
@@ -10,11 +14,8 @@
     }
   },
   "globalHeaders": {
-    "content-security-policy": "default-src https: 'unsafe-eval' 'unsafe-inline'; object-src 'none'",
-    "x-frame-options": "SAMEORIGIN",
-    "x-content-type-options": "nosniff",
-    "referrer-policy": "no-referrer-when-downgrade",
-    "permissions-policy": "geolocation=(), microphone=(), camera=()"
+    "cache-control": "public, max-age=3600",
+    "x-frame-options": "SAMEORIGIN"
   },
   "mimeTypes": {
     ".json": "application/json",
@@ -23,4 +24,4 @@
     ".css": "text/css",
     ".html": "text/html"
   }
-} 
+}

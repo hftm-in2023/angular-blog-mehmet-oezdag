@@ -2,7 +2,8 @@ import { inject, Injectable } from '@angular/core';
 import { Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Observable, of, EMPTY } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { BlogService, BlogPost } from '../services/blog.service';
+import { BlogService } from '../services/blog.service';
+import { BlogPost } from '../schemas/blog.schemas';
 
 @Injectable({
   providedIn: 'root',

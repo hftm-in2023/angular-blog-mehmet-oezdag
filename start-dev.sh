@@ -18,19 +18,19 @@ if ! command -v npm &> /dev/null; then
     exit 1
 fi
 
-# Quarkus Dependencies prüfen falls Java verfügbar ist
-if command -v java &> /dev/null; then
-    echo "☕ Java found, using Quarkus Backend"
+# Quarkus Dependencies prüfen falls Java und Maven verfügbar sind
+if command -v java &> /dev/null && command -v mvn &> /dev/null; then
+    echo "☕ Java and Maven found, using Quarkus Backend"
     BACKEND_TYPE="quarkus"
 else
-    echo "⚠️  Java not found, falling back to Express.js Backend"
+    echo "⚠️  Java or Maven not properly configured, using Express.js Backend"
     BACKEND_TYPE="express"
 fi
 
 # Backend Dependencies installieren je nach Typ
 if [ "$BACKEND_TYPE" = "quarkus" ]; then
     echo "📦 Preparing Quarkus backend..."
-    cd quarkus-backend && ./mvnw compile quarkus:dev &
+    cd quarkus-backend && mvn compile quarkus:dev &
     BACKEND_PID=$!
     cd ..
 else

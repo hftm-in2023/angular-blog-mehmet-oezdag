@@ -1,7 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, BehaviorSubject, combineLatest, EMPTY } from 'rxjs';
+import { Observable, BehaviorSubject, combineLatest, of } from 'rxjs';
 import { map, switchMap, startWith, catchError } from 'rxjs/operators';
-import { BlogService, BlogPost } from '../../../../core/services/blog.service';
+import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { BlogService } from '../../../../core/services/blog.service';
+import { BlogPost } from '../../../../core/schemas/blog.schemas';
+import { BlogFilterComponent } from '../blog-filter/blog-filter.component';
+import { BlogListComponent } from '../blog-list/blog-list.component';
 
 interface BlogData {
   posts: BlogPost[];
@@ -13,6 +18,8 @@ interface BlogData {
   selector: 'app-blog-overview-container',
   templateUrl: './blog-overview-container.component.html',
   styleUrls: ['./blog-overview-container.component.scss'],
+  standalone: true,
+  imports: [CommonModule, MatIconModule, BlogFilterComponent, BlogListComponent],
 })
 export class BlogOverviewContainerComponent implements OnInit {
   // Reactive state subjects
@@ -31,20 +38,23 @@ export class BlogOverviewContainerComponent implements OnInit {
     this.refreshTriggerSubject,
   ]).pipe(
     switchMap(([category, featured]) => {
-      const postsRequest = this.getPostsRequest(category, featured);
-      const categoriesRequest = this.blogService.getCategories().pipe(catchError(() => EMPTY));
+      // Set loading state immediately
+      const loadingState: BlogData = { posts: [], categories: [], isLoading: true };
 
-      return combineLatest([
-        postsRequest.pipe(startWith([])),
-        categoriesRequest.pipe(startWith([])),
-      ]).pipe(
+      const postsRequest = this.getPostsRequest(category, featured);
+      const categoriesRequest = this.blogService.getCategories().pipe(catchError(() => of([])));
+
+      return combineLatest([postsRequest, categoriesRequest]).pipe(
         map(([posts, categories]) => ({
           posts,
           categories,
           isLoading: false,
         })),
-        startWith({ posts: [], categories: [], isLoading: true }),
-        catchError(() => [{ posts: [], categories: [], isLoading: false }]),
+        startWith(loadingState),
+        catchError((error) => {
+          console.error('Error loading blog data:', error);
+          return of({ posts: [], categories: [], isLoading: false });
+        }),
       );
     }),
   );

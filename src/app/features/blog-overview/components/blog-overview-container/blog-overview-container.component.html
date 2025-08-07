@@ -27,7 +27,7 @@
     <app-blog-list
       [posts]="blogData.posts"
       [isLoading]="blogData.isLoading"
-      [hasFilters]="!!(selectedCategory$ | async) || (showOnlyFeatured$ | async)"
+      [hasFilters]="!!((selectedCategory$ | async) || (showOnlyFeatured$ | async))"
     >
     </app-blog-list>
   }

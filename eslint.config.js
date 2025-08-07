@@ -40,6 +40,7 @@ module.exports = tseslint.config(
       "@typescript-eslint/explicit-function-return-type": "warn",
       "@typescript-eslint/no-explicit-any": "warn",
       "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+      "@typescript-eslint/prefer-for-of": "warn",
       "no-console": ["warn", { "allow": ["warn", "error"] }]
     },
   },
@@ -53,5 +54,14 @@ module.exports = tseslint.config(
       "@angular-eslint/template/no-negated-async": "error",
       "@angular-eslint/template/prefer-ngsrc": "error"
     },
+  },
+  {
+    files: ["**/*verification.ts", "**/*.spec.ts"],
+    rules: {
+      "@typescript-eslint/no-unused-vars": "warn",
+      "@typescript-eslint/prefer-for-of": "warn",
+      "@typescript-eslint/explicit-function-return-type": "warn",
+      "no-console": "warn"
+    }
   }
 );

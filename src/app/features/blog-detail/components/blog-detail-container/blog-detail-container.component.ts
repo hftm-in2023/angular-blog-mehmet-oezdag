@@ -2,12 +2,27 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { BlogPost } from '../../../../core/services/blog.service';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { BlogPost } from '../../../../core/schemas/blog.schemas';
+import { BlogDetailViewComponent } from '../blog-detail-view/blog-detail-view.component';
 
 @Component({
   selector: 'app-blog-detail-container',
   templateUrl: './blog-detail-container.component.html',
   styleUrls: ['./blog-detail-container.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    MatIconModule,
+    MatCardModule,
+    MatTooltipModule,
+    BlogDetailViewComponent,
+  ],
 })
 export class BlogDetailContainerComponent implements OnInit {
   blogPost$: Observable<BlogPost | null> = of(null);

@@ -12,6 +12,9 @@ backend/node_modules
 npm-debug.log
 yarn-error.log
 
+# Angular cache
+/.angular
+
 # IDEs and editors
 .idea/
 .project

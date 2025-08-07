@@ -19,23 +19,21 @@ jobs:
         with:
           submodules: true
           lfs: false
+          fetch-depth: 0
+          clean: true
           
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
+          cache-dependency-path: 'package-lock.json'
+          
+      - name: Clear npm cache
+        run: npm cache clean --force
           
       - name: Install dependencies
         run: npm ci
-        
-      - name: Build Angular app
-        run: npm run build -- --configuration production
-        
-      - name: Copy built files to workspace root
-        run: |
-          cp -r dist/angu-blog-mehmet-oezdag/browser/* .
-          ls -la
         
       - name: Build And Deploy
         id: builddeploy
@@ -46,10 +44,10 @@ jobs:
           action: "upload"
           ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
           # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
-          app_location: "/" # Root directory with built files
+          app_location: "/" # App source code path
           api_location: "" # Api source code path - optional
-          output_location: "" # Not used when skip_app_build: true
-          skip_app_build: true # Skip build since we're building manually with Node.js 20
+          output_location: "dist/angu-blog-mehmet-oezdag/browser" # Built app content directory
+          app_build_command: "npm run build -- --configuration production"
           ###### End of Repository/Build Configurations ######
 
   close_pull_request_job:
