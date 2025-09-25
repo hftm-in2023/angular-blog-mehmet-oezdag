@@ -4,6 +4,11 @@ import { isAuthenticatedGuard } from './core/guards/is-authenticated.guard';
 export const routes: Routes = [
   {
     path: '',
+    redirectTo: '/overview',
+    pathMatch: 'full',
+  },
+  {
+    path: 'overview',
     redirectTo: '/blog',
     pathMatch: 'full',
   },
@@ -18,23 +23,25 @@ export const routes: Routes = [
       import('./features/blog-detail/blog-detail.module').then((m) => m.BlogDetailModule),
   },
   {
-    path: 'add-blog',
-    loadChildren: () =>
-      import('./features/add-blog/add-blog.module').then((m) => m.AddBlogModule),
+    path: 'add-blog-page',
+    loadComponent: () =>
+      import('./features/add-blog-page/add-blog-page-routing.module').then(
+        (m) => m.AddBlogPageComponent,
+      ),
     canActivate: [isAuthenticatedGuard],
-    data: { role: 'user' }
+    data: { role: 'user' },
   },
   {
-    path: 'add-blog-page',
+    path: 'auth',
     loadChildren: () =>
-      import('./features/add-blog-page/add-blog-page.module').then((m) => m.AddBlogPageModule),
-    canActivate: [isAuthenticatedGuard],
-    data: { role: 'user' }
+      import('./features/auth-panel/auth-panel.routes').then((m) => m.AUTH_ROUTES),
   },
   {
     path: 'unauthorized',
     loadComponent: () =>
-      import('./core/static/unauthorized/unauthorized.component').then((c) => c.UnauthorizedComponent),
+      import('./core/static/unauthorized/unauthorized.component').then(
+        (c) => c.UnauthorizedComponent,
+      ),
   },
   {
     path: '**',

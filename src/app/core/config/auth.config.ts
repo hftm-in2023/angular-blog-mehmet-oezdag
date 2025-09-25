@@ -1,12 +1,13 @@
 import { PassedInitialConfig } from 'angular-auth-oidc-client';
+import { environment } from '../../../environments/environment';
 
 export const authConfig: PassedInitialConfig = {
   config: {
-    authority: 'https://d-cap-keyclaok.kindbay-711f60b2.westeurope.azurecontainerapps.io/realms/angular-blog',
-    redirectUrl: window.location.origin,
-    postLogoutRedirectUri: window.location.origin,
-    clientId: 'angular-blog-client',
-    scope: 'openid profile email roles',
+    authority: environment.auth.authority,
+    redirectUrl: environment.auth.redirectUrl,
+    postLogoutRedirectUri: environment.auth.postLogoutRedirectUri,
+    clientId: environment.auth.clientId,
+    scope: environment.auth.scope,
     responseType: 'code',
     silentRenew: true,
     useRefreshToken: true,
